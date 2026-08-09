@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { profile } from '../../data/profile';
+
+const allTags = [...new Set(profile.projects.flatMap((p) => p.tags))];
+---
+
+<BaseLayout title="项目" description="我的代表性项目" active="/projects">
+  <SectionHeading title="项目展示" description="我的代表性工作" />
+
+  <div class="mb-8 flex flex-wrap gap-2" id="filter-bar">
+    <button data-filter="全部" class="filter-btn rounded-full px-4 py-1.5 text-sm font-medium bg-primary-600 text-white">全部</button>
+    {allTags.map((t) => (
+      <button data-filter={t} class="filter-btn rounded-full border border-slate-300 px-4 py-1.5 text-sm text-slate-600 transition-colors hover:border-primary-500 hover:text-primary-600 dark:border-slate-700 dark:text-slate-300">
+        {t}
+      </button>
+    ))}
+  </div>
+
+  <div class="grid gap-6 md:grid-cols-2" id="project-grid">
+    {profile.projects.map((p) => (
+      <div class="project-card" data-tags={p.tags.join(',')}>
+        <ProjectCard project={p} />
+      </div>
+    ))}
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const cards = document.querySelectorAll<HTMLElement>('.project-card');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter!;
+        buttons.forEach((b) => {
+          const isActive = b.dataset.filter === filter;
+          b.classList.toggle('bg-primary-600', isActive);
+          b.classList.toggle('text-white', isActive);
+          b.classList.remove('border-primary-500', 'text-primary-600');
+        });
+        cards.forEach((card) => {
+          const tags = card.dataset.tags!.split(',');
+          card.style.display = filter === '全部' || tags.includes(filter) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</BaseLayout>

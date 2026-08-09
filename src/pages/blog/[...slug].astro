@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Tag from '../../components/Tag.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="mx-auto max-w-3xl">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold tracking-tight">{post.data.title}</h1>
+      <div class="mt-3 flex items-center gap-3 text-sm text-slate-500">
+        <time>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
+        <div class="flex gap-1.5">
+          {post.data.tags.map((t) => <Tag label={t} />)}
+        </div>
+      </div>
+    </header>
+
+    {
+      headings.length > 1 && (
+        <nav class="mb-10 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm dark:border-slate-800 dark:bg-slate-900">
+          <p class="mb-2 font-semibold">目录</p>
+          <ul class="space-y-1">
+            {headings.filter((h) => h.depth <= 2).map((h) => (
+              <li>
+                <a href={`#${h.slug}`} class="text-slate-600 hover:text-primary-600 dark:text-slate-400">
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    <div class="prose prose-slate max-w-none dark:prose-invert">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

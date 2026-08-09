@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Tag from '../components/Tag.astro';
+import { profile } from '../data/profile';
+---
+
+<BaseLayout title="关于我" description="我的教育背景与研究兴趣" active="/about">
+  <SectionHeading title="关于我" description={profile.role} />
+
+  <div class="space-y-6 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">
+    {profile.about.map((p) => <p>{p}</p>)}
+  </div>
+
+  <section class="mt-12">
+    <h2 class="mb-4 text-xl font-bold">求职意向</h2>
+    <p class="text-slate-700 dark:text-slate-300">{profile.jobIntention}</p>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="mb-4 text-xl font-bold">教育背景</h2>
+    <ul class="space-y-3">
+      {profile.education.map((e) => (
+        <li class="flex items-center gap-3">
+          <span class="h-2 w-2 rounded-full bg-primary-500"></span>
+          <span class="text-slate-700 dark:text-slate-300">{e}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="mb-4 text-xl font-bold">研究兴趣</h2>
+    <div class="flex flex-wrap gap-2">
+      {profile.researchInterests.map((r) => <Tag label={r} />)}
+    </div>
+  </section>
+</BaseLayout>

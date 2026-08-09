@@ -21,3 +21,10 @@ body {
   color: var(--color-ink);
   background: var(--color-paper);
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #0f172a;
+    color: #e2e8f0;
+  }
+}

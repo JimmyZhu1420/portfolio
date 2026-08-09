@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', 'PingFang SC', 'Source Han Sans SC', 'Noto Sans SC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-ink: #0f172a;
+  --color-paper: #ffffff;
+  --color-mist: #f8fafc;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-paper);
+}

@@ -75,6 +75,7 @@ const { active } = Astro.props;
     const close = () => {
       menu.classList.add('hidden');
       toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', '打开导航菜单');
     };
     toggle.addEventListener('click', () => {
       const isOpen = !menu.classList.contains('hidden');
@@ -83,8 +84,18 @@ const { active } = Astro.props;
       } else {
         menu.classList.remove('hidden');
         toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', '关闭导航菜单');
       }
     });
     menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) close();
+    });
+    document.addEventListener('click', (e) => {
+      const isOpen = !menu.classList.contains('hidden');
+      if (isOpen && !toggle.contains(e.target as Node) && !menu.contains(e.target as Node)) {
+        close();
+      }
+    });
   }
 </script>

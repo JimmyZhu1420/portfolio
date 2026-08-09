@@ -23,9 +23,7 @@ body {
   background: var(--color-paper);
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #0f172a;
-    color: #e2e8f0;
-  }
+:where(.dark) body {
+  background: var(--color-slate-900);
+  color: var(--color-slate-200);
 }

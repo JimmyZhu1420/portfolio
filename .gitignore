@@ -3,6 +3,10 @@ dist/
 # generated types
 .astro/
 
+# dev-tool artifacts
+.playwright-mcp/
+projects-page.png
+
 # dependencies
 node_modules/
 

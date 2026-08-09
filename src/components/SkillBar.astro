@@ -1,0 +1,17 @@
+---
+interface Props {
+  name: string;
+  level: number;
+}
+const { name, level } = Astro.props;
+---
+
+<div>
+  <div class="mb-1 flex items-center justify-between text-sm">
+    <span class="font-medium">{name}</span>
+    <span class="text-slate-400">{level}%</span>
+  </div>
+  <div class="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+    <div class="h-full rounded-full bg-primary-500 transition-[width] duration-700" style={`width: ${level}%`}></div>
+  </div>
+</div>

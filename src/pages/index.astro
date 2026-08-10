@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Tag from '../components/Tag.astro';
+import { profile } from '../data/profile';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
+const featuredProjects = profile.projects.filter((p) => p.featured);
+---
+
+<BaseLayout title="首页" description={profile.tagline} active="/">
+  <!-- Hero -->
+  <section class="py-16 text-center">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{profile.name}</h1>
+    <p class="mt-4 text-lg text-primary-600 dark:text-primary-500">{profile.role}</p>
+    <p class="mx-auto mt-3 max-w-xl text-slate-600 dark:text-slate-400">{profile.tagline}</p>
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+      {profile.researchInterests.map((r) => <Tag label={r} />)}
+    </div>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+      <a href="/projects" class="rounded-lg bg-primary-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-500">
+        查看我的项目
+      </a>
+      <a href={profile.resumeUrl} class="rounded-lg border border-slate-300 px-6 py-2.5 text-sm font-medium transition-colors hover:border-slate-400 dark:border-slate-700">
+        下载简历
+      </a>
+    </div>
+  </section>
+
+  <!-- 精选项目 -->
+  <section class="py-10">
+    <SectionHeading title="精选项目" description="我正在做的事" href="/projects" />
+    <div class="grid gap-6 md:grid-cols-2">
+      {featuredProjects.map((p) => <ProjectCard project={p} />)}
+    </div>
+  </section>
+
+  <!-- 最新文章 -->
+  {
+    posts.length > 0 && (
+      <section class="py-10">
+        <SectionHeading title="最新文章" href="/blog" />
+        <ul class="divide-y divide-slate-200 dark:divide-slate-800">
+          {posts.slice(0, 3).map((post) => (
+            <li class="py-4">
+              <a href={`/blog/${post.id}`} class="group block">
+                <h3 class="font-medium transition-colors group-hover:text-primary-600">{post.data.title}</h3>
+                <p class="mt-1 text-sm text-slate-500">
+                  {post.data.pubDate.toLocaleDateString('zh-CN')} · {post.data.description}
+                </p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <!-- 技能速览 -->
+  <section class="py-10">
+    <SectionHeading title="技能速览" description="我常用的技术栈" href="/skills" />
+    <div class="grid gap-4 sm:grid-cols-3">
+      {profile.skillCategories.map((c) => (
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
+          <p class="font-semibold">{c.category}</p>
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            {c.skills.map((s) => <Tag label={s.name} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

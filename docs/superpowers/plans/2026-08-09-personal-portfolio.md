@@ -293,7 +293,16 @@ body {
 }
 ```
 
-- [ ] **Step 7: 验证类型与构建**
+- [ ] **Step 7: 确保博客内容目录存在**
+
+```bash
+mkdir -p src/content/blog
+touch src/content/blog/.gitkeep
+```
+
+说明：`glob` loader 的 base 目录不存在会报错；Task 5 首页已调用 `getCollection('blog')`，必须先建目录。
+
+- [ ] **Step 8: 验证类型与构建**
 
 ```bash
 npx astro check

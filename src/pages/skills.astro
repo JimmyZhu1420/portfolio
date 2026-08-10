@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import SkillBar from '../components/SkillBar.astro';
+import { profile } from '../data/profile';
+---
+
+<BaseLayout title="技能" description="我的技术栈" active="/skills">
+  <SectionHeading title="技能清单" description="我的技术栈" />
+
+  <div class="grid gap-10 md:grid-cols-2">
+    {profile.skillCategories.map((cat) => (
+      <section>
+        <h2 class="mb-5 text-xl font-bold">{cat.category}</h2>
+        <div class="space-y-5">
+          {cat.skills.map((s) => <SkillBar name={s.name} level={s.level} />)}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>

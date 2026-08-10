@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Tag from '../../components/Tag.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="博客" description="技术与思考文章" active="/blog">
+  <SectionHeading title="博客" description="记录思考与实践" />
+  <ul class="space-y-2">
+    {posts.map((post) => (
+      <li>
+        <a href={`/blog/${post.id}`} class="group block rounded-xl p-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900">
+          <h2 class="text-lg font-semibold group-hover:text-primary-600">{post.data.title}</h2>
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{post.data.description}</p>
+          <div class="mt-2 flex items-center gap-2 text-xs text-slate-400">
+            <span>{post.data.pubDate.toLocaleDateString('zh-CN')}</span>
+            <div class="flex gap-1.5">
+              {post.data.tags.map((t) => <Tag label={t} />)}
+            </div>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# 个人简历源文件（本地使用，不提交）
+main.tex

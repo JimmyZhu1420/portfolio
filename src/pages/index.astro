@@ -14,7 +14,7 @@ const featuredProjects = profile.projects.filter((p) => p.featured);
   <!-- Hero -->
   <section class="py-16 text-center">
     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{profile.name}</h1>
-    <p class="mt-4 text-lg text-primary-600 dark:text-primary-500">{profile.role}</p>
+    {profile.role && <p class="mt-4 text-lg text-primary-600 dark:text-primary-500">{profile.role}</p>}
     <p class="mx-auto mt-3 max-w-xl text-slate-600 dark:text-slate-400">{profile.tagline}</p>
     <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
       {profile.researchInterests.map((r) => <Tag label={r} />)}

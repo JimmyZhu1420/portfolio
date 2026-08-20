@@ -3,6 +3,7 @@ title: AI Agent 入门：从 LLM 到智能体
 description: 简述智能体（Agent）的核心概念、系统组成与一个最小实现。
 pubDate: 2026-08-05
 tags: [AI Agent, 教程]
+draft: true
 ---
 
 ## 什么是 AI Agent

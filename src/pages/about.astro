@@ -1,38 +1,106 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import Tag from '../components/Tag.astro';
 import { profile } from '../data/profile';
 ---
 
-<BaseLayout title="关于我" description="我的教育背景与研究兴趣" active="/about">
-  <SectionHeading title="关于我" description={profile.role} />
+<BaseLayout title="关于我" description="朱佳明的教育背景、工程能力与 AI Agent 实践" active="/about">
+  <header class="page-hero">
+    <p class="eyebrow">ABOUT / PROFILE</p>
+    <h1>我更关心 Agent 如何可靠完成任务。</h1>
+    <p>{profile.tagline}</p>
+  </header>
 
-  <div class="space-y-6 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">
-    {profile.about.map((p) => <p>{p}</p>)}
-  </div>
-
-  <section class="mt-12">
-    <h2 class="mb-4 text-xl font-bold">求职意向</h2>
-    <p class="text-slate-700 dark:text-slate-300">{profile.jobIntention}</p>
+  <section class="intro-grid" aria-labelledby="intro-title">
+    <div class="intro-copy">
+      <h2 id="intro-title">从模型演示，到可以解释的工程系统</h2>
+      {profile.about.map((paragraph) => <p>{paragraph}</p>)}
+      <a href={`mailto:${profile.email}`}>聊聊项目或实习机会 <span aria-hidden="true">→</span></a>
+    </div>
+    <aside aria-label="个人概况">
+      <dl>
+        <div><dt>当前身份</dt><dd>计算机科学与技术硕士研究生</dd></div>
+        <div><dt>所在地</dt><dd>{profile.location}</dd></div>
+        <div><dt>求职方向</dt><dd>{profile.jobIntention}</dd></div>
+        <div><dt>近期重点</dt><dd>Agent Runtime · 可信 RAG · Evaluation</dd></div>
+      </dl>
+    </aside>
   </section>
 
-  <section class="mt-12">
-    <h2 class="mb-4 text-xl font-bold">教育背景</h2>
-    <ul class="space-y-3">
-      {profile.education.map((e) => (
-        <li class="flex items-center gap-3">
-          <span class="h-2 w-2 rounded-full bg-primary-500"></span>
-          <span class="text-slate-700 dark:text-slate-300">{e}</span>
-        </li>
+  <section id="skills" class="section-shell section-rule" aria-labelledby="skills-title">
+    <div class="section-heading">
+      <p class="eyebrow">CAPABILITIES / EVIDENCE</p>
+      <h2 id="skills-title">能力不画百分比，用项目证据说明。</h2>
+      <p>每项能力都可以继续追到案例页、测试结果和公开仓库。</p>
+    </div>
+    <div class="capability-list">
+      {profile.capabilities.map((capability) => (
+        <article>
+          <span>{capability.index}</span>
+          <div>
+            <h3>{capability.title}</h3>
+            <p>{capability.description}</p>
+            <div>{capability.technologies.map((technology) => <Tag label={technology} />)}</div>
+          </div>
+          <a href={capability.href}>{capability.evidence} <span aria-hidden="true">↗</span></a>
+        </article>
       ))}
-    </ul>
+    </div>
   </section>
 
-  <section class="mt-12">
-    <h2 class="mb-4 text-xl font-bold">研究兴趣</h2>
-    <div class="flex flex-wrap gap-2">
-      {profile.researchInterests.map((r) => <Tag label={r} />)}
+  <section id="focus" class="education-grid section-rule" aria-labelledby="education-title">
+    <div>
+      <p class="eyebrow">EDUCATION</p>
+      <h2 id="education-title">教育经历</h2>
+      <ol>
+        {profile.education.map((item) => <li>{item}</li>)}
+      </ol>
+    </div>
+    <div>
+      <p class="eyebrow">CURRENT FOCUS</p>
+      <h2>研究与实践方向</h2>
+      <div class="tag-list">{profile.researchInterests.map((interest) => <Tag label={interest} />)}</div>
+      <p>目前围绕 <a href="/projects/evoagent">EvoAgent</a> 与 <a href="/projects/oa">OA Evidence Agent</a> 持续整理系统实现、评测证据和失败边界。</p>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .page-hero { max-width: 54rem; padding: clamp(4.5rem, 10vw, 8rem) 0 clamp(3.5rem, 7vw, 5.5rem); }
+  .page-hero h1 { max-width: 13ch; margin-top: .8rem; font-size: clamp(2.7rem, 6vw, 5rem); font-weight: 770; letter-spacing: -.06em; line-height: 1.04; }
+  .page-hero > p:last-child { max-width: 46rem; margin-top: 1.35rem; color: var(--muted-text); font-size: 1rem; line-height: 1.9; }
+  .intro-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2.5rem, 8vw, 7rem); border-top: 1px solid var(--hairline); padding: clamp(3.5rem, 7vw, 5.5rem) 0; }
+  .intro-copy h2, .section-heading h2, .education-grid h2 { font-size: clamp(1.65rem, 3.4vw, 2.5rem); font-weight: 740; letter-spacing: -.04em; line-height: 1.18; }
+  .intro-copy > p { margin-top: 1.15rem; color: var(--muted-text); font-size: .94rem; line-height: 1.95; }
+  .intro-copy > a { display: inline-flex; gap: .45rem; margin-top: 1.5rem; color: var(--page-text); font-size: .84rem; font-weight: 680; text-underline-offset: .28rem; }
+  aside { align-self: start; border: 1px solid var(--hairline); border-radius: 1.25rem; background: color-mix(in srgb, var(--surface) 88%, transparent); padding: 1.35rem; }
+  dl { margin: 0; }
+  dl div { display: grid; grid-template-columns: 6rem 1fr; gap: 1rem; border-bottom: 1px solid var(--hairline); padding: .9rem 0; }
+  dl div:first-child { padding-top: 0; }
+  dl div:last-child { border: 0; padding-bottom: 0; }
+  dt { color: var(--muted-text); font: 600 .68rem/1.6 var(--font-mono); }
+  dd { margin: 0; font-size: .82rem; font-weight: 620; line-height: 1.6; }
+  .section-heading { max-width: 49rem; }
+  .section-heading h2 { margin-top: .7rem; }
+  .section-heading > p:last-child { margin-top: .9rem; color: var(--muted-text); font-size: .9rem; line-height: 1.8; }
+  .capability-list { margin-top: 2.5rem; border-top: 1px solid var(--hairline); }
+  .capability-list article { display: grid; grid-template-columns: 3rem 1fr auto; gap: 1rem; align-items: start; border-bottom: 1px solid var(--hairline); padding: 1.7rem 0; }
+  .capability-list article > span { color: var(--color-primary-500); font: 650 .68rem/1.6 var(--font-mono); }
+  .capability-list h3 { font-size: 1.05rem; font-weight: 700; }
+  .capability-list p { max-width: 46rem; margin-top: .45rem; color: var(--muted-text); font-size: .84rem; line-height: 1.75; }
+  .capability-list article div div { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .85rem; }
+  .capability-list a { color: var(--page-text); font-size: .75rem; font-weight: 650; text-underline-offset: .25rem; }
+  .education-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem, 8vw, 7rem); padding: clamp(4rem, 8vw, 6.5rem) 0 1rem; }
+  .education-grid h2 { margin-top: .65rem; }
+  .education-grid ol { margin: 1.6rem 0 0; padding: 0; list-style: none; }
+  .education-grid li { position: relative; border-left: 1px solid var(--hairline); padding: 0 0 1.35rem 1.25rem; color: var(--muted-text); font-size: .88rem; line-height: 1.75; }
+  .education-grid li::before { position: absolute; top: .45rem; left: -.25rem; width: .45rem; height: .45rem; border-radius: 50%; background: var(--color-primary-500); content: ''; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.6rem; }
+  .education-grid > div:last-child > p:last-child { margin-top: 1.25rem; color: var(--muted-text); font-size: .88rem; line-height: 1.8; }
+  .education-grid a { color: var(--page-text); font-weight: 650; text-underline-offset: .2rem; }
+  @media (max-width: 760px) {
+    .intro-grid, .education-grid { grid-template-columns: 1fr; }
+    .capability-list article { grid-template-columns: 2rem 1fr; }
+    .capability-list article > a { grid-column: 2; }
+  }
+</style>

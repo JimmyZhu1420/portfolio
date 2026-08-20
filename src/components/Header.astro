@@ -1,101 +1,168 @@
 ---
-import { profile, navItems } from '../data/profile';
-import { cn } from '../lib/utils';
+import { navItems, profile } from '../data/profile';
 
 interface Props {
   active?: string;
 }
+
 const { active } = Astro.props;
 ---
 
-<header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
-  <nav class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-    <a href="/" class="text-lg font-bold tracking-tight">{profile.name}</a>
+<header class="site-header">
+  <nav class="nav-shell" aria-label="主导航">
+    <a href="/" class="brand" aria-label={`${profile.name}，返回首页`}>
+      <span class="brand-mark" aria-hidden="true">J</span>
+      <span>{profile.name}</span>
+    </a>
 
-    <!-- 桌面端导航 -->
-    <ul class="hidden items-center gap-6 text-sm text-slate-600 dark:text-slate-300 sm:flex">
-      {
-        navItems.map((item) => (
+    <div class="desktop-nav">
+      <ul>
+        {navItems.map((item) => (
           <li>
-            <a
-              href={item.href}
-              class={cn(
-                'transition-colors hover:text-slate-900 dark:hover:text-white',
-                active === item.href && 'font-semibold text-primary-600 dark:text-primary-500',
-              )}
-            >
+            <a href={item.href} class:list={[active === item.href && 'is-active']} aria-current={active === item.href ? 'page' : undefined}>
               {item.label}
             </a>
           </li>
-        ))
-      }
-    </ul>
+        ))}
+      </ul>
+      <a class="github-link" href={profile.social.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="切换深浅色主题"><span aria-hidden="true">◐</span></button>
+    </div>
 
-    <!-- 移动端菜单按钮 -->
-    <button
-      type="button"
-      id="mobile-menu-toggle"
-      class="rounded-md p-2 text-slate-600 transition-colors hover:text-slate-900 sm:hidden dark:text-slate-300 dark:hover:text-white"
-      aria-label="打开导航菜单"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
+    <div class="mobile-actions">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="切换深浅色主题"><span aria-hidden="true">◐</span></button>
+      <button
+        type="button"
+        id="mobile-menu-toggle"
+        class="menu-toggle"
+        aria-label="打开导航菜单"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span></span><span></span>
+      </button>
+    </div>
   </nav>
 
-  <!-- 移动端下拉菜单 -->
-  <div id="mobile-menu" class="hidden border-t border-slate-200/70 sm:hidden dark:border-slate-800">
-    <ul class="mx-auto max-w-4xl px-6 py-2 text-sm text-slate-600 dark:text-slate-300">
-      {
-        navItems.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class={cn(
-                'block py-2 transition-colors hover:text-slate-900 dark:hover:text-white',
-                active === item.href && 'font-semibold text-primary-600 dark:text-primary-500',
-              )}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
+  <div id="mobile-menu" class="mobile-menu" hidden>
+    <ul>
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} class:list={[active === item.href && 'is-active']} aria-current={active === item.href ? 'page' : undefined}>
+            <span>{item.label}</span><i aria-hidden="true">↗</i>
+          </a>
+        </li>
+      ))}
+      <li><a href={profile.social.github} target="_blank" rel="noopener noreferrer"><span>GitHub</span><i aria-hidden="true">↗</i></a></li>
     </ul>
   </div>
 </header>
 
 <script>
-  const toggle = document.getElementById('mobile-menu-toggle');
+  const root = document.documentElement;
+  const themeToggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const syncThemeButtons = () => {
+    const dark = root.classList.contains('dark');
+    themeToggles.forEach((button) => {
+      button.setAttribute('aria-label', dark ? '切换到浅色主题' : '切换到深色主题');
+      const icon = button.querySelector('span');
+      if (icon) icon.textContent = dark ? '☼' : '◐';
+    });
+  };
+
+  themeToggles.forEach((button) => {
+    button.addEventListener('click', () => {
+      const dark = !root.classList.contains('dark');
+      root.classList.toggle('dark', dark);
+      root.dataset.theme = dark ? 'dark' : 'light';
+      try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
+      syncThemeButtons();
+    });
+  });
+  syncThemeButtons();
+
+  const menuToggle = document.getElementById('mobile-menu-toggle') as HTMLButtonElement | null;
   const menu = document.getElementById('mobile-menu');
-  if (toggle && menu) {
-    const close = () => {
-      menu.classList.add('hidden');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', '打开导航菜单');
+  if (menuToggle && menu) {
+    const close = (restoreFocus = false) => {
+      menu.hidden = true;
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', '打开导航菜单');
+      menuToggle.classList.remove('is-open');
+      if (restoreFocus) menuToggle.focus();
     };
-    toggle.addEventListener('click', () => {
-      const isOpen = !menu.classList.contains('hidden');
-      if (isOpen) {
-        close();
+
+    menuToggle.addEventListener('click', () => {
+      const willOpen = menu.hidden;
+      if (willOpen) {
+        menu.hidden = false;
+        menuToggle.setAttribute('aria-expanded', 'true');
+        menuToggle.setAttribute('aria-label', '关闭导航菜单');
+        menuToggle.classList.add('is-open');
       } else {
-        menu.classList.remove('hidden');
-        toggle.setAttribute('aria-expanded', 'true');
-        toggle.setAttribute('aria-label', '关闭导航菜单');
-      }
-    });
-    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !menu.classList.contains('hidden')) close();
-    });
-    document.addEventListener('click', (e) => {
-      const isOpen = !menu.classList.contains('hidden');
-      if (isOpen && !toggle.contains(e.target as Node) && !menu.contains(e.target as Node)) {
         close();
       }
+    });
+
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => close()));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.hidden) close(true);
+    });
+    document.addEventListener('click', (event) => {
+      if (!menu.hidden && !menuToggle.contains(event.target as Node) && !menu.contains(event.target as Node)) close();
     });
   }
 </script>
+
+<style>
+  .site-header {
+    position: sticky;
+    z-index: 50;
+    top: 0;
+    border-bottom: 1px solid var(--hairline);
+    background: color-mix(in srgb, var(--page-bg) 84%, transparent);
+    backdrop-filter: blur(18px) saturate(150%);
+  }
+
+  .nav-shell {
+    display: flex;
+    width: 100%;
+    max-width: 72rem;
+    min-height: 4.25rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  .brand { display: inline-flex; align-items: center; gap: 0.65rem; color: var(--page-text); font-size: 0.94rem; font-weight: 750; letter-spacing: -0.02em; text-decoration: none; }
+  .brand-mark { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; border-radius: 0.55rem; color: #fff; background: #111827; font-family: var(--font-mono); font-size: 0.76rem; box-shadow: 0 7px 18px rgb(15 23 42 / 0.14); }
+  .desktop-nav { display: flex; align-items: center; gap: 1.35rem; }
+  .desktop-nav ul { display: flex; align-items: center; gap: 1.4rem; margin: 0; padding: 0; list-style: none; }
+  .desktop-nav a { color: var(--muted-text); font-size: 0.82rem; font-weight: 560; text-decoration: none; transition: color 160ms ease; }
+  .desktop-nav a:hover, .desktop-nav a.is-active { color: var(--page-text); }
+  .desktop-nav a.is-active { font-weight: 700; }
+  .github-link { border-left: 1px solid var(--hairline); padding-left: 1.35rem; }
+  .theme-toggle, .menu-toggle { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border: 0; border-radius: 0.75rem; color: var(--muted-text); background: transparent; cursor: pointer; }
+  .theme-toggle:hover, .menu-toggle:hover { color: var(--page-text); background: var(--surface-soft); }
+  .theme-toggle span { font-size: 1.05rem; }
+  .mobile-actions { display: none; align-items: center; gap: 0.1rem; }
+  .menu-toggle { position: relative; }
+  .menu-toggle span { position: absolute; width: 1.1rem; height: 1.5px; border-radius: 999px; background: currentColor; transition: transform 180ms ease, top 180ms ease; }
+  .menu-toggle span:first-child { top: 1.08rem; }
+  .menu-toggle span:last-child { top: 1.58rem; }
+  .menu-toggle.is-open span:first-child { top: 1.35rem; transform: rotate(45deg); }
+  .menu-toggle.is-open span:last-child { top: 1.35rem; transform: rotate(-45deg); }
+  .mobile-menu { border-top: 1px solid var(--hairline); background: color-mix(in srgb, var(--page-bg) 96%, transparent); }
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu ul { max-width: 72rem; margin: 0 auto; padding: 0.75rem 1.25rem 1.1rem; list-style: none; }
+  .mobile-menu a { display: flex; min-height: 2.9rem; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--hairline); color: var(--muted-text); font-size: 0.9rem; font-weight: 560; text-decoration: none; }
+  .mobile-menu a.is-active { color: var(--color-primary-500); font-weight: 700; }
+  .mobile-menu i { font-style: normal; }
+  :global(.dark) .brand-mark { color: #111827; background: #f8fafc; }
+
+  @media (max-width: 700px) {
+    .desktop-nav { display: none; }
+    .mobile-actions { display: flex; }
+  }
+</style>

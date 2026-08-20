@@ -1,37 +1,165 @@
 ---
 import type { Project } from '../data/profile';
+import ProjectVisual from './ProjectVisual.astro';
 import Tag from './Tag.astro';
 
-const { project } = Astro.props as { project: Project };
+interface Props {
+  project: Project;
+  reverse?: boolean;
+}
+
+const { project, reverse = false } = Astro.props;
 ---
 
-<article class="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
-  <div class="flex items-start justify-between gap-4">
-    <h3 class="text-lg font-semibold leading-snug">{project.title}</h3>
-    {project.year && <span class="shrink-0 text-sm text-slate-400">{project.year}</span>}
-  </div>
-  <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{project.description}</p>
-  <ul class="mt-4 space-y-1 text-sm text-slate-700 dark:text-slate-300">
-    {project.highlights.map((h) => (
-      <li class="flex gap-2">
-        <span class="text-primary-500">•</span>
-        <span>{h}</span>
-      </li>
-    ))}
-  </ul>
-  <div class="mt-4 flex flex-wrap gap-1.5">
-    {project.tags.map((t) => <Tag label={t} />)}
-  </div>
-  <div class="mt-5 flex items-center gap-4 text-sm">
-    {project.github && (
-      <a href={project.github} target="_blank" rel="noopener" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
-        GitHub ↗
+<article class:list={['project-feature', reverse && 'is-reverse']}>
+  <div class="project-copy">
+    <div class="project-meta">
+      <span>{project.eyebrow}</span>
+      <span>{project.year} · {project.status}</span>
+    </div>
+    <h3>{project.title}</h3>
+    <p class="project-tagline">{project.tagline}</p>
+    <p class="project-description">{project.description}</p>
+
+    <div class="metric-grid" aria-label={`${project.name} 量化信息`}>
+      {project.metrics.map((metric) => (
+        <div>
+          <strong>{metric.value}</strong>
+          <span>{metric.label}</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="tag-list">
+      {project.tags.slice(0, 5).map((tag) => <Tag label={tag} />)}
+    </div>
+
+    <div class="project-actions">
+      <a class="detail-link" href={`/projects/${project.slug}`}>
+        查看项目案例 <span aria-hidden="true">→</span>
       </a>
-    )}
-    {project.demo && (
-      <a href={project.demo} target="_blank" rel="noopener" class="font-medium text-primary-600 hover:underline dark:text-primary-500">
-        演示 ↗
-      </a>
-    )}
+      {project.repositoryPublic ? (
+        <a href={project.github} target="_blank" rel="noopener noreferrer">
+          GitHub <span aria-hidden="true">↗</span>
+        </a>
+      ) : (
+        <span class="repo-state">GitHub 待公开</span>
+      )}
+    </div>
   </div>
+
+  <a class="visual-link" href={`/projects/${project.slug}`} aria-label={`查看 ${project.name} 项目案例`}>
+    <ProjectVisual project={project} compact />
+  </a>
 </article>
+
+<style>
+  .project-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    padding: clamp(2.5rem, 6vw, 5rem) 0;
+  }
+
+  .project-feature + .project-feature {
+    border-top: 1px solid rgb(148 163 184 / 0.22);
+  }
+
+  .is-reverse .project-copy { order: 2; }
+  .is-reverse .visual-link { order: 1; }
+
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: #64748b;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .project-meta span:first-child { color: var(--color-primary-600); }
+
+  h3 {
+    max-width: 18ch;
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    font-weight: 750;
+    letter-spacing: -0.035em;
+    line-height: 1.16;
+  }
+
+  .project-tagline {
+    margin-top: 1rem;
+    color: #334155;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.7;
+  }
+
+  .project-description {
+    margin-top: 0.65rem;
+    color: #64748b;
+    font-size: 0.92rem;
+    line-height: 1.8;
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    margin-top: 1.4rem;
+  }
+
+  .metric-grid div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.2rem;
+    border-left: 2px solid #e2e8f0;
+    padding-left: 0.65rem;
+  }
+
+  .metric-grid strong { color: #0f172a; font-size: 0.98rem; line-height: 1.2; }
+  .metric-grid span { color: #64748b; font-size: 0.68rem; line-height: 1.35; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.4rem; }
+  .project-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin-top: 1.5rem; }
+  .project-actions a { color: #475569; font-size: 0.84rem; font-weight: 650; text-underline-offset: 0.25rem; transition: color 160ms ease; }
+  .project-actions .repo-state { color: #64748b; font-size: 0.78rem; font-weight: 620; }
+  .project-actions a:hover { color: var(--color-primary-600); }
+  .project-actions .detail-link { display: inline-flex; align-items: center; gap: 0.45rem; border-radius: 999px; background: #0f172a; padding: 0.7rem 1rem; color: #fff; text-decoration: none; }
+  .project-actions .detail-link:hover { background: var(--color-primary-600); color: #fff; }
+  .project-actions .detail-link span { transition: transform 160ms ease; }
+  .project-actions .detail-link:hover span { transform: translateX(0.2rem); }
+  .visual-link { display: block; border-radius: 1.5rem; outline-offset: 0.35rem; transition: transform 220ms ease; }
+  .visual-link:hover { transform: translateY(-0.25rem); }
+
+  :global(.dark) .project-feature + .project-feature { border-color: rgb(71 85 105 / 0.5); }
+  :global(.dark) .project-meta, :global(.dark) .project-description, :global(.dark) .metric-grid span, :global(.dark) .project-actions a, :global(.dark) .project-actions .repo-state { color: #94a3b8; }
+  :global(.dark) .project-meta span:first-child { color: #a99fff; }
+  :global(.dark) .project-tagline { color: #cbd5e1; }
+  :global(.dark) .metric-grid div { border-color: #334155; }
+  :global(.dark) .metric-grid strong { color: #f8fafc; }
+  :global(.dark) .project-actions .detail-link { background: #f8fafc; color: #0f172a; }
+  :global(.dark) .project-actions .detail-link:hover { background: #a99fff; color: #0f172a; }
+
+  @media (max-width: 850px) {
+    .project-feature { grid-template-columns: 1fr; gap: 2rem; }
+    .is-reverse .project-copy, .is-reverse .visual-link { order: initial; }
+    .project-copy { max-width: 42rem; }
+  }
+
+  @media (max-width: 520px) {
+    .project-feature { padding: 2.75rem 0; }
+    .metric-grid { gap: 0.35rem; }
+    .metric-grid div { padding-left: 0.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .visual-link, .project-actions .detail-link span { transition: none; }
+  }
+</style>

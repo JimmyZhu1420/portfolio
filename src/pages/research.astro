@@ -1,38 +1,47 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import Tag from '../components/Tag.astro';
 import { profile } from '../data/profile';
 ---
 
-<BaseLayout title="研究" description="研究兴趣与成果" active="/research">
-  <SectionHeading title="研究" description="AI Agent 与大模型应用方向" />
+<BaseLayout title="研究与实践" description="AI Agent、可信检索与系统评测方向的工程实践">
+  <header class="page-head">
+    <p class="eyebrow">RESEARCH THROUGH BUILDING</p>
+    <h1>研究问题，先做成可验证的系统。</h1>
+    <p>目前的成果以工程项目、复现实验和技术笔记为主，不把项目回归测试包装成学术或临床结论。</p>
+    <div>{profile.researchInterests.map((interest) => <Tag label={interest} />)}</div>
+  </header>
 
-  <section class="mb-12">
-    <h2 class="mb-4 text-xl font-bold">研究兴趣</h2>
-    <div class="flex flex-wrap gap-2">
-      {profile.researchInterests.map((r) => <Tag label={r} />)}
-    </div>
-  </section>
-
-  <section>
-    <h2 class="mb-6 text-xl font-bold">论文 / 成果</h2>
-    {
-      profile.publications.length > 0 ? (
-        <ul class="space-y-4">
-          {profile.publications.map((pub) => (
-            <li class="rounded-xl border border-slate-200 p-5 dark:border-slate-800">
-              <h3 class="font-semibold">
-                {pub.url ? <a href={pub.url} target="_blank" rel="noopener" class="hover:text-primary-600">{pub.title} ↗</a> : pub.title}
-              </h3>
-              <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{pub.authors}</p>
-              <p class="mt-1 text-sm text-slate-500">{pub.venue} · {pub.year}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p class="text-slate-500">暂无研究成果，将陆续补充。</p>
-      )
-    }
+  <section class="directions" aria-labelledby="directions-title">
+    <h2 id="directions-title">正在探索的两条路径</h2>
+    {profile.projects.map((project, index) => (
+      <article>
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <div>
+          <p>{project.eyebrow}</p>
+          <h3>{project.name}</h3>
+          <strong>{project.tagline}</strong>
+          <p>{project.boundaries[0]}</p>
+        </div>
+        <a href={`/projects/${project.slug}`}>查看案例 <span aria-hidden="true">→</span></a>
+      </article>
+    ))}
   </section>
 </BaseLayout>
+
+<style>
+  .page-head { max-width: 54rem; padding: clamp(4.5rem, 10vw, 8rem) 0 clamp(3.5rem, 7vw, 5rem); }
+  .page-head h1 { max-width: 13ch; margin-top: .75rem; font-size: clamp(2.7rem, 6vw, 5rem); font-weight: 770; letter-spacing: -.06em; line-height: 1.04; }
+  .page-head > p:not(.eyebrow) { max-width: 45rem; margin-top: 1.25rem; color: var(--muted-text); line-height: 1.85; }
+  .page-head > div { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+  .directions { border-top: 1px solid var(--hairline); padding-top: clamp(3rem, 6vw, 5rem); }
+  .directions > h2 { font-size: clamp(1.6rem, 3vw, 2.35rem); font-weight: 730; letter-spacing: -.04em; }
+  article { display: grid; grid-template-columns: 3rem 1fr auto; gap: 1.25rem; align-items: start; border-bottom: 1px solid var(--hairline); padding: 2rem 0; }
+  article > span { color: var(--color-primary-500); font: 650 .68rem/1.5 var(--font-mono); }
+  article div > p:first-child { color: var(--muted-text); font: 600 .65rem/1.4 var(--font-mono); letter-spacing: .07em; }
+  article h3 { margin-top: .35rem; font-size: 1.35rem; font-weight: 720; }
+  article strong { display: block; margin-top: .55rem; font-size: .9rem; line-height: 1.7; }
+  article div > p:last-child { max-width: 48rem; margin-top: .65rem; color: var(--muted-text); font-size: .82rem; line-height: 1.75; }
+  article > a { color: var(--page-text); font-size: .78rem; font-weight: 680; text-underline-offset: .25rem; }
+  @media (max-width: 650px) { article { grid-template-columns: 2rem 1fr; } article > a { grid-column: 2; } }
+</style>

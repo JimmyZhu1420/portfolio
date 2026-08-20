@@ -1,21 +1,41 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import SkillBar from '../components/SkillBar.astro';
+import Tag from '../components/Tag.astro';
 import { profile } from '../data/profile';
 ---
 
-<BaseLayout title="技能" description="我的技术栈" active="/skills">
-  <SectionHeading title="技能清单" description="我的技术栈" />
-
-  <div class="grid gap-10 md:grid-cols-2">
-    {profile.skillCategories.map((cat) => (
-      <section>
-        <h2 class="mb-5 text-xl font-bold">{cat.category}</h2>
-        <div class="space-y-5">
-          {cat.skills.map((s) => <SkillBar name={s.name} level={s.level} />)}
-        </div>
-      </section>
+<BaseLayout title="能力与技术栈" description="从实际项目出发整理的 Agent 工程能力">
+  <header class="page-head">
+    <p class="eyebrow">CAPABILITIES</p>
+    <h1>能力与技术栈</h1>
+    <p>这里不使用主观熟练度百分比。每项能力都对应一个可阅读的项目案例与实现证据。</p>
+  </header>
+  <div class="capability-grid">
+    {profile.capabilities.map((capability) => (
+      <article>
+        <span>{capability.index}</span>
+        <h2>{capability.title}</h2>
+        <p>{capability.description}</p>
+        <div>{capability.technologies.map((technology) => <Tag label={technology} />)}</div>
+        <a href={capability.href}>{capability.evidence} <span aria-hidden="true">→</span></a>
+      </article>
     ))}
   </div>
+  <p class="about-link">完整背景已经合并到 <a href="/about#skills">关于页面</a>。</p>
 </BaseLayout>
+
+<style>
+  .page-head { max-width: 46rem; padding: clamp(4.5rem, 10vw, 8rem) 0 3.5rem; }
+  .page-head h1 { margin-top: .7rem; font-size: clamp(2.7rem, 6vw, 4.8rem); font-weight: 770; letter-spacing: -.06em; line-height: 1.05; }
+  .page-head > p:last-child { margin-top: 1.2rem; color: var(--muted-text); line-height: 1.85; }
+  .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; border-top: 1px solid var(--hairline); padding-top: 3rem; }
+  article { display: flex; min-height: 19rem; flex-direction: column; border: 1px solid var(--hairline); border-radius: 1.2rem; background: color-mix(in srgb, var(--surface) 86%, transparent); padding: 1.35rem; }
+  article > span { color: var(--color-primary-500); font: 650 .68rem/1 var(--font-mono); }
+  h2 { margin-top: 1.8rem; font-size: 1.15rem; font-weight: 710; }
+  article > p { margin-top: .7rem; color: var(--muted-text); font-size: .84rem; line-height: 1.75; }
+  article > div { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: 1rem; }
+  article > a { margin-top: auto; padding-top: 1.25rem; color: var(--page-text); font-size: .78rem; font-weight: 680; text-underline-offset: .25rem; }
+  .about-link { margin-top: 2rem; color: var(--muted-text); font-size: .82rem; }
+  .about-link a { color: var(--page-text); font-weight: 650; }
+  @media (max-width: 800px) { .capability-grid { grid-template-columns: 1fr; } article { min-height: auto; } article > a { margin-top: 1.5rem; } }
+</style>

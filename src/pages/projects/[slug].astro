@@ -1,0 +1,445 @@
+---
+import ProjectVisual from '../../components/ProjectVisual.astro';
+import Tag from '../../components/Tag.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProject, profile } from '../../data/profile';
+
+export function getStaticPaths() {
+  return profile.projects.map((project) => ({ params: { slug: project.slug } }));
+}
+
+const project = getProject(Astro.params.slug ?? '');
+
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+const projectIndex = profile.projects.findIndex((item) => item.slug === project.slug);
+const nextProject = profile.projects[(projectIndex + 1) % profile.projects.length];
+---
+
+<BaseLayout title={project.name} description={project.tagline} active="/projects">
+  <article class:list={['project-detail', `tone-${project.tone}`]}>
+    <header class="detail-hero">
+      <div class="hero-copy">
+        <a class="back-link" href="/projects"><span aria-hidden="true">←</span> 返回项目</a>
+        <p class="eyebrow">{project.eyebrow}</p>
+        <h1>{project.title}</h1>
+        <p class="tagline">{project.tagline}</p>
+        <p class="description">{project.description}</p>
+        <div class="hero-meta" aria-label="项目状态">
+          <span>{project.year}</span>
+          <span>{project.status}</span>
+        </div>
+        {project.repositoryPublic ? (
+          <a
+            class="github-link"
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            在 GitHub 查看源码 <span aria-hidden="true">↗</span>
+          </a>
+        ) : (
+          <p class="repository-note">公开仓库准备中 · 当前案例基于本地已验收版本</p>
+        )}
+      </div>
+
+      <dl class="metric-panel" aria-label={`${project.name} 项目指标`}>
+        {project.metrics.map((metric, index) => (
+          <div>
+            <dt>{metric.label}</dt>
+            <dd>{metric.value}</dd>
+            <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          </div>
+        ))}
+      </dl>
+    </header>
+
+    <section class="detail-section challenge" aria-labelledby="challenge-title">
+      <div class="section-label">
+        <p>01 · CONTEXT</p>
+        <h2 id="challenge-title">要解决的问题</h2>
+      </div>
+      <div class="prose-copy">
+        {project.challenge.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </section>
+
+    <section class="detail-section build" aria-labelledby="build-title">
+      <div class="section-label">
+        <p>02 · SYSTEM</p>
+        <h2 id="build-title">我实现的系统</h2>
+      </div>
+      <div class="build-grid">
+        {project.build.map((item, index) => (
+          <section>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </section>
+        ))}
+      </div>
+    </section>
+
+    <section class="detail-section flow-section" aria-labelledby="flow-title">
+      <div class="section-label">
+        <p>03 · FLOW</p>
+        <h2 id="flow-title">一次任务如何流转</h2>
+      </div>
+      <div class="flow-content">
+        <ProjectVisual project={project} />
+        <ol aria-label={`${project.name} 执行步骤`}>
+          {project.flow.map((step, index) => (
+            <li>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{step}</strong>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="detail-section proof" aria-labelledby="proof-title">
+      <div class="section-label">
+        <p>04 · EVIDENCE</p>
+        <h2 id="proof-title">如何验证它</h2>
+      </div>
+      <ul class="evidence-list">
+        {project.proof.map((item, index) => (
+          <li>
+            <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <p>{item}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="detail-section boundaries" aria-labelledby="boundary-title">
+      <div class="section-label">
+        <p>05 · BOUNDARIES</p>
+        <h2 id="boundary-title">能力边界</h2>
+      </div>
+      <div class="boundary-card">
+        <p class="boundary-intro">明确项目没有证明什么，和证明了什么同样重要。</p>
+        <ul>
+          {project.boundaries.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="detail-section stack" aria-labelledby="stack-title">
+      <div class="section-label">
+        <p>06 · STACK</p>
+        <h2 id="stack-title">技术栈</h2>
+      </div>
+      <div class="stack-list">
+        {project.tags.map((tag) => <Tag label={tag} />)}
+      </div>
+    </section>
+
+    <nav class="next-project" aria-label="下一个项目">
+      <span>NEXT CASE</span>
+      <a href={`/projects/${nextProject.slug}`}>
+        <span>
+          <small>{nextProject.eyebrow}</small>
+          <strong>{nextProject.name}</strong>
+          <em>{nextProject.tagline}</em>
+        </span>
+        <i aria-hidden="true">→</i>
+      </a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-detail {
+    --detail-accent: #6558f5;
+    --detail-accent-soft: rgb(101 88 245 / 0.1);
+    padding-bottom: clamp(4rem, 9vw, 7.5rem);
+  }
+  .project-detail.tone-emerald {
+    --detail-accent: #0f8f72;
+    --detail-accent-soft: rgb(15 143 114 / 0.1);
+  }
+
+  .detail-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.42fr);
+    align-items: end;
+    gap: clamp(3rem, 8vw, 7rem);
+    min-height: 39rem;
+    padding: clamp(4.5rem, 10vw, 8rem) 0 clamp(4rem, 8vw, 6rem);
+  }
+  .hero-copy { max-width: 50rem; }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 2.5rem;
+    color: var(--muted-text);
+    font-size: 0.78rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--detail-accent); }
+  .detail-hero .eyebrow { color: var(--detail-accent); }
+  h1 {
+    max-width: 18ch;
+    margin-top: 0.9rem;
+    font-size: clamp(2.55rem, 5.4vw, 5rem);
+    font-weight: 780;
+    letter-spacing: -0.06em;
+    line-height: 1.04;
+  }
+  .tagline {
+    max-width: 44rem;
+    margin-top: 1.4rem;
+    color: #354052;
+    font-size: clamp(1.02rem, 1.8vw, 1.2rem);
+    font-weight: 650;
+    line-height: 1.7;
+  }
+  .description {
+    max-width: 47rem;
+    margin-top: 0.85rem;
+    color: var(--muted-text);
+    font-size: 0.94rem;
+    line-height: 1.9;
+  }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 1.5rem; }
+  .hero-meta span {
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    color: var(--muted-text);
+    background: color-mix(in srgb, var(--surface) 86%, transparent);
+    padding: 0.38rem 0.65rem;
+    font: 600 0.67rem/1 var(--font-mono);
+  }
+  .github-link {
+    display: inline-flex;
+    min-height: 2.9rem;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.6rem;
+    border-radius: 999px;
+    color: #fff;
+    background: #111827;
+    padding: 0 1.05rem;
+    font-size: 0.82rem;
+    font-weight: 680;
+    text-decoration: none;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+  .github-link:hover { transform: translateY(-0.15rem); background: var(--detail-accent); }
+  .repository-note { display: inline-flex; margin-top: 1.6rem; border: 1px solid var(--hairline); border-radius: 999px; color: var(--muted-text); background: color-mix(in srgb, var(--surface) 86%, transparent); padding: 0.72rem 0.9rem; font-size: 0.76rem; font-weight: 620; }
+
+  .metric-panel { margin: 0; border-top: 1px solid var(--hairline); }
+  .metric-panel div {
+    position: relative;
+    border-bottom: 1px solid var(--hairline);
+    padding: 1.2rem 2rem 1.2rem 0;
+  }
+  .metric-panel dt { color: var(--muted-text); font-size: 0.7rem; line-height: 1.4; }
+  .metric-panel dd {
+    margin-top: 0.35rem;
+    color: var(--page-text);
+    font: 720 clamp(1.3rem, 2.5vw, 2rem)/1.15 var(--font-mono);
+    letter-spacing: -0.04em;
+  }
+  .metric-panel div > span {
+    position: absolute;
+    top: 1.2rem;
+    right: 0;
+    color: var(--detail-accent);
+    font: 650 0.6rem/1 var(--font-mono);
+  }
+
+  .detail-section {
+    display: grid;
+    grid-template-columns: minmax(11rem, 0.36fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 8vw, 7rem);
+    border-top: 1px solid var(--hairline);
+    padding: clamp(4rem, 9vw, 7rem) 0;
+  }
+  .section-label > p {
+    color: var(--detail-accent);
+    font: 650 0.67rem/1 var(--font-mono);
+    letter-spacing: 0.1em;
+  }
+  .section-label h2 {
+    margin-top: 0.8rem;
+    font-size: clamp(1.55rem, 3vw, 2.2rem);
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+  }
+  .prose-copy { max-width: 47rem; }
+  .prose-copy p {
+    color: var(--muted-text);
+    font-size: clamp(0.98rem, 1.4vw, 1.08rem);
+    line-height: 1.95;
+  }
+  .prose-copy p + p { margin-top: 1.3rem; }
+
+  .build-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .build-grid section {
+    min-height: 15rem;
+    border: 1px solid var(--hairline);
+    border-radius: 1.2rem;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    padding: 1.35rem;
+  }
+  .build-grid section > span { color: var(--detail-accent); font: 650 0.65rem/1 var(--font-mono); }
+  .build-grid h3 {
+    margin-top: 2.25rem;
+    font-size: 1.05rem;
+    font-weight: 720;
+    letter-spacing: -0.025em;
+  }
+  .build-grid p {
+    margin-top: 0.65rem;
+    color: var(--muted-text);
+    font-size: 0.84rem;
+    line-height: 1.8;
+  }
+
+  .flow-content { min-width: 0; }
+  .flow-content ol {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .flow-content li {
+    position: relative;
+    min-width: 0;
+    border-top: 1px solid var(--hairline);
+    padding: 0.9rem 0.65rem 0 0;
+  }
+  .flow-content li::before {
+    position: absolute;
+    top: -0.24rem;
+    left: 0;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--detail-accent);
+    content: '';
+  }
+  .flow-content li > span {
+    display: block;
+    color: var(--detail-accent);
+    font: 650 0.6rem/1 var(--font-mono);
+  }
+  .flow-content li strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-size: 0.74rem;
+    font-weight: 680;
+    line-height: 1.45;
+  }
+
+  .evidence-list { margin: 0; padding: 0; list-style: none; }
+  .evidence-list li {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 1rem;
+    border-bottom: 1px solid var(--hairline);
+    padding: 1.2rem 0;
+  }
+  .evidence-list li:first-child { padding-top: 0; }
+  .evidence-list li > span { color: var(--detail-accent); font: 650 0.65rem/1.75 var(--font-mono); }
+  .evidence-list p { color: var(--muted-text); font-size: 0.9rem; line-height: 1.85; }
+
+  .boundary-card {
+    border: 1px solid color-mix(in srgb, var(--detail-accent) 30%, var(--hairline));
+    border-radius: 1.2rem;
+    background: var(--detail-accent-soft);
+    padding: clamp(1.35rem, 4vw, 2.25rem);
+  }
+  .boundary-intro { color: var(--page-text); font-size: 1rem; font-weight: 680; }
+  .boundary-card ul {
+    display: grid;
+    gap: 0.8rem;
+    margin: 1.25rem 0 0;
+    padding-left: 1.1rem;
+  }
+  .boundary-card li { color: var(--muted-text); font-size: 0.86rem; line-height: 1.8; }
+  .stack-list { display: flex; flex-wrap: wrap; align-content: start; gap: 0.55rem; }
+
+  .next-project { border-top: 1px solid var(--hairline); padding-top: clamp(3rem, 7vw, 5rem); }
+  .next-project > span {
+    color: var(--detail-accent);
+    font: 650 0.67rem/1 var(--font-mono);
+    letter-spacing: 0.1em;
+  }
+  .next-project a {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    color: inherit;
+    padding: 1.5rem 0;
+    text-decoration: none;
+  }
+  .next-project a > span { display: flex; flex-direction: column; gap: 0.4rem; }
+  .next-project small {
+    color: var(--muted-text);
+    font: 550 0.62rem/1.4 var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+  .next-project strong {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 760;
+    letter-spacing: -0.055em;
+    line-height: 1;
+  }
+  .next-project em {
+    max-width: 42rem;
+    color: var(--muted-text);
+    font-size: 0.82rem;
+    font-style: normal;
+    line-height: 1.6;
+  }
+  .next-project i {
+    color: var(--detail-accent);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-style: normal;
+    transition: transform 180ms ease;
+  }
+  .next-project a:hover i { transform: translateX(0.35rem); }
+
+  :global(.dark) .tagline { color: #cbd5e1; }
+  :global(.dark) .github-link { color: #111827; background: #f8fafc; }
+  :global(.dark) .github-link:hover { background: #c9c3ff; }
+
+  @media (max-width: 860px) {
+    .detail-hero { grid-template-columns: 1fr; align-items: start; min-height: auto; }
+    .metric-panel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .metric-panel div { border-right: 1px solid var(--hairline); padding-right: 1rem; }
+    .metric-panel div:last-child { border-right: 0; }
+    .detail-section { grid-template-columns: 1fr; gap: 2.25rem; }
+  }
+
+  @media (max-width: 620px) {
+    .detail-hero { gap: 2.75rem; padding-block: 4rem 3.5rem; }
+    .metric-panel { grid-template-columns: 1fr; }
+    .metric-panel div { border-right: 0; }
+    .build-grid { grid-template-columns: 1fr; }
+    .build-grid section { min-height: auto; }
+    .flow-content ol { grid-template-columns: 1fr; gap: 0; }
+    .flow-content li {
+      border-top: 0;
+      border-left: 1px solid var(--hairline);
+      padding: 0 0 1.25rem 1rem;
+    }
+    .flow-content li::before { top: 0.1rem; left: -0.24rem; }
+    .next-project a { align-items: start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .github-link, .next-project i { transition: none; }
+  }
+</style>

@@ -1,165 +1,98 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectFlowNote from '../../components/ProjectFlowNote.astro';
-import Tag from '../../components/Tag.astro';
 import { getProject, profile } from '../../data/profile';
 
-export function getStaticPaths() {
-  return profile.projects.map((project) => ({ params: { slug: project.slug } }));
-}
-
+export function getStaticPaths() { return profile.projects.map((project) => ({ params: { slug: project.slug } })); }
 const project = getProject(Astro.params.slug ?? '');
 if (!project) return Astro.redirect('/404');
-
-const projectIndex = profile.projects.findIndex((item) => item.slug === project.slug);
-const nextProject = profile.projects[(projectIndex + 1) % profile.projects.length];
 const articleHref = project.slug === 'evoagent' ? '/blog/evoagent-runtime' : '/blog/oa-evidence-agent';
 ---
 
 <BaseLayout title={project.name} description={project.tagline} active="/projects" socialImage={null}>
-  <article class:list={['project-detail', `tone-${project.tone}`]}>
-    <header class="project-head">
-      <a class="back-link" href="/projects"><span aria-hidden="true">←</span> 所有项目</a>
-      <div class="title-row">
-        <div>
-          <p class="eyebrow">{project.eyebrow}</p>
-          <h1>{project.name}</h1>
-          <p class="project-title">{project.title}</p>
+  <div class="site-wrapper detail-shell">
+    <article>
+      <a class="back-link" href="/projects">← 返回项目列表</a>
+      <header class="project-header">
+        <h1>{project.name}</h1>
+        <p>{project.title}</p>
+        <div class="project-actions">
+          {project.repositoryPublic ? <a class="primary" href={project.github} target="_blank" rel="noopener noreferrer">查看 GitHub <span aria-hidden="true">↗</span></a> : <span>仓库待公开</span>}
+          <a href={articleHref}>阅读项目文章 <span aria-hidden="true">→</span></a>
         </div>
-        <dl class="project-meta">
-          <div><dt>年份</dt><dd>{project.year}</dd></div>
-          <div><dt>状态</dt><dd>{project.status}</dd></div>
-        </dl>
-      </div>
-      <p class="tagline">{project.tagline}</p>
-      <p class="description">{project.description}</p>
-      <div class="head-links">
-        {project.repositoryPublic ? (
-          <a class="source-link" href={project.github} target="_blank" rel="noopener noreferrer">查看 GitHub 源码 <span aria-hidden="true">↗</span></a>
-        ) : (
-          <span class="private-note">仓库待公开 · 当前案例来自本地已验收版本</span>
-        )}
-        <a href={articleHref}>阅读项目复盘 <span aria-hidden="true">→</span></a>
-      </div>
-    </header>
+      </header>
 
-    <dl class="facts" aria-label={`${project.name} 已验证事实`}>
-      {project.metrics.map((metric) => <div><dd>{metric.value}</dd><dt>{metric.label}</dt></div>)}
-    </dl>
+      <section class="overview">
+        <p>{project.description}</p>
+        <div class="tags">{project.tags.map((tag) => <span>{tag}</span>)}</div>
+        <dl>{project.metrics.map((metric) => <div><dd>{metric.value}</dd><dt>{metric.label}</dt></div>)}</dl>
+      </section>
 
-    <section class="detail-section" aria-labelledby="context-title">
-      <div class="section-label"><span>01</span><h2 id="context-title">为什么做它</h2></div>
-      <div class="prose-copy">{project.challenge.map((paragraph) => <p>{paragraph}</p>)}</div>
-    </section>
+      <section class="content-section">
+        <h2>为什么做这个项目</h2>
+        {project.challenge.map((paragraph) => <p>{paragraph}</p>)}
+      </section>
 
-    <section class="detail-section" aria-labelledby="system-title">
-      <div class="section-label"><span>02</span><h2 id="system-title">我实现了什么</h2></div>
-      <ol class="build-list">
-        {project.build.map((item, index) => (
-          <li>
-            <span>{String(index + 1).padStart(2, '0')}</span>
-            <div><h3>{item.title}</h3><p>{item.description}</p></div>
-          </li>
-        ))}
-      </ol>
-    </section>
+      <section class="content-section">
+        <h2>我实现了什么</h2>
+        <div class="build-grid">
+          {project.build.map((item, index) => <section class={`shape-${(index % 3) + 1}`}><span>0{index + 1}</span><h3>{item.title}</h3><p>{item.description}</p></section>)}
+        </div>
+      </section>
 
-    <section class="detail-section" aria-labelledby="flow-title">
-      <div class="section-label"><span>03</span><h2 id="flow-title">一次任务怎样流转</h2></div>
-      <ProjectFlowNote project={project} />
-    </section>
+      <section class="content-section">
+        <h2>一次任务如何流转</h2>
+        <ol class="flow">{project.flow.map((step, index) => <li><span>0{index + 1}</span><strong>{step}</strong></li>)}</ol>
+      </section>
 
-    <section class="detail-section" aria-labelledby="proof-title">
-      <div class="section-label"><span>04</span><h2 id="proof-title">我怎样验证它</h2></div>
-      <ul class="proof-list">
-        {project.proof.map((item, index) => <li><span>0{index + 1}</span><p>{item}</p></li>)}
-      </ul>
-    </section>
-
-    <section class="detail-section" aria-labelledby="boundary-title">
-      <div class="section-label"><span>05</span><h2 id="boundary-title">它没有证明什么</h2></div>
-      <div class="boundary-note">
-        <strong>边界和能力一样重要。</strong>
-        <ul>{project.boundaries.map((item) => <li>{item}</li>)}</ul>
-      </div>
-    </section>
-
-    <section class="detail-section stack-section" aria-labelledby="stack-title">
-      <div class="section-label"><span>06</span><h2 id="stack-title">使用的技术</h2></div>
-      <div class="stack-list">{project.tags.map((tag) => <Tag label={tag} />)}</div>
-    </section>
-
-    <aside class="article-note">
-      <div><span>PROJECT NOTE</span><h2>项目做完不算结束，我也写下了设计取舍与边界。</h2></div>
-      <a href={articleHref}>阅读 {project.name} 复盘 <span aria-hidden="true">→</span></a>
-    </aside>
-
-    <nav class="next-project" aria-label="下一个项目">
-      <span>下一个项目</span>
-      <a href={`/projects/${nextProject.slug}`}><strong>{nextProject.name}</strong><i aria-hidden="true">→</i></a>
-    </nav>
-  </article>
+      <section class="content-section evidence-section">
+        <div><h2>如何验证它</h2><ul>{project.proof.map((item) => <li>{item}</li>)}</ul></div>
+        <aside><h2>能力边界</h2><ul>{project.boundaries.map((item) => <li>{item}</li>)}</ul></aside>
+      </section>
+    </article>
+  </div>
 </BaseLayout>
 
 <style>
-  .project-detail { --detail-accent: #6558d9; padding-bottom: 1rem; }
-  .project-detail.tone-emerald { --detail-accent: #28775a; }
-  .project-head { max-width: 56rem; padding: clamp(3.5rem, 8vw, 6.5rem) 0 clamp(3rem, 6vw, 4.5rem); }
-  .back-link { display: inline-flex; gap: .4rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); color: var(--muted-text); font-size: .72rem; font-weight: 620; text-underline-offset: .22rem; }
-  .project-head .eyebrow { color: var(--detail-accent); font-size: .65rem; }
-  .title-row { display: flex; align-items: end; justify-content: space-between; gap: 3rem; }
-  h1 { margin-top: .55rem; font-size: clamp(2.5rem, 5.5vw, 4.2rem); font-weight: 720; letter-spacing: -.06em; line-height: 1; }
-  .project-title { max-width: 42rem; margin-top: .8rem; color: var(--page-text); font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 650; line-height: 1.6; }
-  .project-meta { flex: none; width: 11rem; margin: 0; border-top: 1px solid var(--hairline); }
-  .project-meta div { display: grid; grid-template-columns: 3.5rem 1fr; gap: .75rem; border-bottom: 1px solid var(--hairline); padding: .65rem 0; }
-  .project-meta dt { color: var(--muted-text); font-size: .62rem; }
-  .project-meta dd { margin: 0; font-size: .65rem; font-weight: 620; line-height: 1.5; }
-  .tagline { max-width: 45rem; margin-top: 1.5rem; color: var(--page-text); font-size: .96rem; font-weight: 630; line-height: 1.8; }
-  .description { max-width: 50rem; margin-top: .75rem; color: var(--muted-text); font-size: .86rem; line-height: 1.9; }
-  .head-links { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.4rem; }
-  .head-links a { color: var(--page-text); font-size: .74rem; font-weight: 650; text-underline-offset: .22rem; }
-  .head-links .source-link { border-radius: .7rem; color: #fff; background: #24221f; padding: .72rem .85rem; text-decoration: none; }
-  .private-note { border: 1px solid var(--hairline); border-radius: 999px; color: var(--muted-text); padding: .48rem .7rem; font-size: .65rem; }
-  .facts { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
-  .facts div { padding: 1.25rem 1.25rem 1.25rem 0; }
-  .facts div + div { border-left: 1px solid var(--hairline); padding-left: 1.25rem; }
-  .facts dd { margin: 0; color: var(--detail-accent); font: 680 1rem/1.25 var(--font-mono); }
-  .facts dt { margin-top: .32rem; color: var(--muted-text); font-size: .65rem; line-height: 1.5; }
-  .detail-section { display: grid; grid-template-columns: minmax(9rem, .35fr) minmax(0, 1fr); gap: clamp(2.5rem, 8vw, 7rem); border-bottom: 1px solid var(--hairline); padding: clamp(4rem, 8vw, 6.5rem) 0; }
-  .section-label span { color: var(--detail-accent); font: 650 .62rem/1 var(--font-mono); }
-  .section-label h2 { max-width: 10ch; margin-top: .65rem; font-size: clamp(1.35rem, 2.7vw, 2rem); font-weight: 710; letter-spacing: -.04em; line-height: 1.2; }
-  .prose-copy { max-width: 48rem; }
-  .prose-copy p { color: var(--muted-text); font-size: .93rem; line-height: 1.95; }
-  .prose-copy p + p { margin-top: 1.15rem; }
-  .build-list, .proof-list { margin: 0; padding: 0; list-style: none; }
-  .build-list li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 1rem; border-top: 1px solid var(--hairline); padding: 1.3rem 0; }
-  .build-list li:last-child { border-bottom: 1px solid var(--hairline); }
-  .build-list li > span, .proof-list li > span { color: var(--detail-accent); font: 650 .62rem/1.6 var(--font-mono); }
-  .build-list h3 { font-size: .94rem; font-weight: 690; }
-  .build-list p { max-width: 49rem; margin-top: .4rem; color: var(--muted-text); font-size: .8rem; line-height: 1.8; }
-  .proof-list li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 1rem; border-bottom: 1px solid var(--hairline); padding: 1.1rem 0; }
-  .proof-list li:first-child { padding-top: 0; }
-  .proof-list p { color: var(--muted-text); font-size: .83rem; line-height: 1.85; }
-  .boundary-note { position: relative; border: 1px solid #d7d0bd; border-radius: .4rem 1rem 1rem .9rem; background: #fff9df; padding: clamp(1.3rem, 3vw, 2rem); box-shadow: 0 1rem 2.5rem rgb(64 54 35 / .07); transform: rotate(.4deg); }
-  .boundary-note::before { position: absolute; top: -.5rem; left: 42%; width: 3.2rem; height: .9rem; background: rgb(255 255 255 / .65); content: ''; transform: rotate(-3deg); }
-  .boundary-note strong { color: #3f3a31; font-size: .92rem; }
-  .boundary-note ul { display: grid; gap: .65rem; margin: 1rem 0 0; padding-left: 1.1rem; }
-  .boundary-note li { color: #726a59; font-size: .78rem; line-height: 1.8; }
-  .stack-section { border-bottom: 0; }
-  .stack-list { display: flex; flex-wrap: wrap; align-content: start; gap: .45rem; }
-  .article-note { display: flex; align-items: end; justify-content: space-between; gap: 2rem; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); padding: clamp(2.5rem, 5vw, 4rem) 0; }
-  .article-note span { color: var(--detail-accent); font: 650 .6rem/1 var(--font-mono); letter-spacing: .06em; }
-  .article-note h2 { max-width: 31rem; margin-top: .6rem; font-size: clamp(1.2rem, 2.5vw, 1.7rem); font-weight: 700; letter-spacing: -.035em; line-height: 1.35; }
-  .article-note a { flex: none; color: var(--page-text); font-size: .74rem; font-weight: 650; text-underline-offset: .22rem; }
-  .next-project { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-top: 2rem; }
-  .next-project > span { color: var(--muted-text); font-size: .65rem; }
-  .next-project a { display: flex; align-items: center; gap: 1rem; color: inherit; text-decoration: none; }
-  .next-project strong { font-size: 1.15rem; font-weight: 690; }
-  .next-project i { color: var(--detail-accent); font-style: normal; }
-  :global(.dark) .head-links .source-link { color: #211f1b; background: #f5f1e8; }
-  :global(.dark) .boundary-note { border-color: #5b513b; background: #352f20; }
-  :global(.dark) .boundary-note strong { color: #f4ead0; }
-  :global(.dark) .boundary-note li { color: #b7aa88; }
-  @media (max-width: 760px) { .title-row { align-items: flex-start; flex-direction: column; gap: 2rem; } .project-meta { width: min(100%, 24rem); } .detail-section { grid-template-columns: 1fr; gap: 2rem; } .section-label h2 { max-width: none; } }
-  @media (max-width: 560px) { .facts { grid-template-columns: 1fr; } .facts div + div { border-top: 1px solid var(--hairline); border-left: 0; padding-left: 0; } .article-note { align-items: flex-start; flex-direction: column; } }
+  .detail-shell { max-width: 64rem; padding-block: 2.5rem 7rem; }
+  .back-link { color: var(--muted-text); font-size: .78rem; text-decoration: none; }
+  .back-link:hover { color: var(--primary); }
+  .project-header { padding: 2.5rem 0 2rem; }
+  h1 { margin: 0; font-family: var(--font-brand); font-size: clamp(2.3rem, 5vw, 3.4rem); font-weight: 680; letter-spacing: -.025em; }
+  .project-header > p { max-width: 44rem; margin-top: .65rem; color: var(--muted-text); font-size: 1.08rem; line-height: 1.65; }
+  .project-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.4rem; }
+  .project-actions a, .project-actions > span { border-radius: 999px; color: var(--primary); padding: .65rem .9rem; font-size: .76rem; font-weight: 650; }
+  .project-actions a { text-decoration: none; }
+  .project-actions a.primary { color: var(--primary-contrast); background: var(--primary); }
+  .project-actions > span { border: 1px solid var(--hairline); color: var(--muted-text); }
+  .overview { border: 1px solid var(--hairline); border-radius: var(--radius-2xl); background: color-mix(in srgb, var(--surface) 62%, transparent); padding: clamp(1.5rem, 4vw, 2.5rem); box-shadow: var(--shadow-sm); }
+  .overview > p { color: var(--muted-text); line-height: 1.8; }
+  .tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.2rem; }
+  .tags span { border-radius: 999px; color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); padding: .34rem .6rem; font-size: .68rem; }
+  dl { display: grid; grid-template-columns: repeat(3, 1fr); margin: 2rem 0 0; border-top: 1px solid var(--hairline); padding-top: 1.5rem; }
+  dl div + div { border-left: 1px solid var(--hairline); padding-left: 1.5rem; }
+  dd { margin: 0; color: var(--primary); font-size: 1.2rem; font-weight: 700; }
+  dt { margin-top: .3rem; color: var(--muted-text); font-size: .7rem; }
+  .content-section { padding-top: 4rem; }
+  .content-section > h2, .evidence-section h2 { margin: 0 0 1rem; font-family: var(--font-brand); font-size: 1.8rem; font-weight: 650; }
+  .content-section > p { max-width: 50rem; margin: .8rem 0; line-height: 1.85; }
+  .build-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+  .build-grid section { border: 1px solid var(--hairline); background: var(--surface-soft); padding: 1.5rem; }
+  .shape-1 { border-radius: var(--radius-3xl) var(--radius-lg) var(--radius-2xl) var(--radius-xl); }
+  .shape-2 { border-radius: var(--radius-xl) var(--radius-2xl) var(--radius-lg) var(--radius-3xl); }
+  .shape-3 { border-radius: var(--radius-lg) var(--radius-3xl) var(--radius-xl) var(--radius-2xl); }
+  .build-grid span { color: var(--primary); font-size: .68rem; font-weight: 650; }
+  .build-grid h3 { margin-top: 1.2rem; font-family: var(--font-brand); font-size: 1.22rem; font-weight: 650; }
+  .build-grid p { margin-top: .55rem; color: var(--muted-text); font-size: .86rem; line-height: 1.75; }
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 0; list-style: none; }
+  .flow li { position: relative; border-top: 2px solid color-mix(in srgb, var(--primary) 30%, var(--hairline)); padding: 1rem .5rem 0 0; }
+  .flow li::before { position: absolute; top: -.34rem; left: 0; width: .58rem; height: .58rem; border-radius: 50%; background: var(--primary); content: ''; }
+  .flow span { display: block; color: var(--primary); font-size: .62rem; }
+  .flow strong { display: block; margin-top: .35rem; font-size: .72rem; font-weight: 650; }
+  .evidence-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .evidence-section > div, .evidence-section aside { border: 1px solid var(--hairline); border-radius: var(--radius-2xl); padding: 1.5rem; }
+  .evidence-section aside { background: var(--surface-soft); }
+  .evidence-section ul { display: grid; gap: .65rem; margin: 0; padding-left: 1.2rem; }
+  .evidence-section li { color: var(--muted-text); font-size: .82rem; line-height: 1.75; }
+  .evidence-section li::marker { color: var(--primary); }
+  @media (max-width: 700px) { .detail-shell { padding-top: 1.5rem; } .build-grid, .evidence-section { grid-template-columns: 1fr; } dl { grid-template-columns: 1fr; } dl div + div { border-top: 1px solid var(--hairline); border-left: 0; margin-top: 1rem; padding: 1rem 0 0; } .flow { grid-template-columns: 1fr; } .flow li { border-top: 0; border-left: 2px solid color-mix(in srgb, var(--primary) 30%, var(--hairline)); padding: 0 0 1.2rem 1rem; } .flow li::before { top: .15rem; left: -.36rem; } }
 </style>

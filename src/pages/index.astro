@@ -5,183 +5,154 @@ import { profile } from '../data/profile';
 
 const posts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 4);
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const avatarUrl = 'https://github.com/JimmyZhu1420.png?size=480';
+const focuses = [
+  { icon: '⌘', title: 'Agent 工程', description: '关注工作流编排、工具调用、记忆与可恢复执行。' },
+  { icon: '◎', title: '可信 RAG', description: '让回答带回来源、降级状态与清晰的能力边界。' },
+  { icon: '✓', title: '评测验证', description: '用测试、回放与证据门禁判断系统是否真的变好。' },
+];
 ---
 
 <BaseLayout title="首页" description={profile.tagline} active="/">
-  <header class="home-intro">
-    <div class="intro-copy">
-      <p class="hello">你好，我是</p>
-      <h1>朱佳明</h1>
-      <p class="identity">东华大学计算机硕士在读，正在学习怎样把 AI Agent 做成可靠、可验证的工程系统。</p>
-      <div class="roles" aria-label="身份与方向">
-        <span>Agent Builder</span><span>Developer</span><span>Writer</span>
-      </div>
-      <nav class="intro-links" aria-label="个人链接">
-        <a href={profile.social.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-        <a href={`mailto:${profile.email}`}>Email <span aria-hidden="true">↗</span></a>
-        <a href="/about">关于我 <span aria-hidden="true">→</span></a>
-      </nav>
-    </div>
-    <aside class="current-note" aria-label="当前状态">
-      <span class="pin" aria-hidden="true"></span>
-      <p class="note-title">NOW</p>
-      <strong>在上海学习和做项目</strong>
-      <p>最近围绕多智能体协作、可信 RAG 与评测方法继续迭代两个 Agent 项目。</p>
-      <small><i aria-hidden="true"></i>开放 AI Agent 开发实习机会</small>
-    </aside>
-  </header>
-
-  <section class="focus-grid" aria-label="关注方向">
-    <article>
-      <span aria-hidden="true">⌁</span>
-      <h2>Agent 系统</h2>
-      <p>让规划、工具调用、记忆与反思在明确预算内运行。</p>
-    </article>
-    <article>
-      <span aria-hidden="true">◎</span>
-      <h2>可信检索</h2>
-      <p>让回答保留来源、降级状态与清晰的能力边界。</p>
-    </article>
-    <article>
-      <span aria-hidden="true">✓</span>
-      <h2>评测与验证</h2>
-      <p>用测试、回放与证据门禁判断系统是否真的变好。</p>
-    </article>
-  </section>
-
-  <section class="home-section" aria-labelledby="project-title">
-    <header class="section-head">
-      <div>
-        <h2 id="project-title">最近项目</h2>
-        <p>两个正在持续迭代的 AI Agent 工程项目。</p>
-      </div>
-      <a href="/projects">查看全部 <span aria-hidden="true">→</span></a>
-    </header>
-    <div class="project-grid">
-      {profile.projects.map((project, index) => (
-        <article class:list={['project-card', project.slug === 'oa' && 'oa-card']}>
-          <a class="project-main" href={`/projects/${project.slug}`}>
-            <div class="project-top">
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <small>{project.year}</small>
-            </div>
-            <div class="mini-flow" aria-hidden="true">
-              {project.flow.slice(0, 4).map((step) => <i>{step}</i>)}
-            </div>
-            <h3>{project.name}</h3>
-            <p>{project.tagline}</p>
-          </a>
-          <div class="project-foot">
-            <span>{project.tags.slice(0, 3).join(' · ')}</span>
-            {project.repositoryPublic && <a href={project.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.name} GitHub 仓库`}>GitHub ↗</a>}
+  <div class="page-wrapper">
+    <section class="hero-section">
+      <div class="site-wrapper">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h1>{profile.name}</h1>
+            <p>{profile.role}。<br />关注智能体编排、可信检索与系统评测。</p>
+            <div class="roles" aria-label="身份标签"><span>⌘ Developer</span><span>✎ Writer</span></div>
           </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="home-section writing" aria-labelledby="writing-title">
-    <header class="section-head">
-      <div>
-        <h2 id="writing-title">最近文章</h2>
-        <p>项目里的设计取舍、验证证据和失败边界。</p>
+          <div class="avatar-wrap"><img src={avatarUrl} alt={`${profile.name}的头像`} width="240" height="240" /></div>
+        </div>
       </div>
-      <a href="/blog">查看全部 <span aria-hidden="true">→</span></a>
-    </header>
-    <ol class="post-list">
-      {posts.map((post) => (
-        <li>
-          <a href={`/blog/${post.id}`}>
-            <div>
-              <h3>{post.data.title}</h3>
-              <p>{post.data.description}</p>
-            </div>
-            <time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
-          </a>
-        </li>
-      ))}
-    </ol>
-  </section>
+    </section>
 
-  <section class="hello-again" aria-labelledby="hello-again-title">
-    <div>
-      <h2 id="hello-again-title">很高兴见到你！</h2>
-      <p>如果你对项目有问题，或者想聊 Agent、实习和编程学习，欢迎随时联系我。</p>
-    </div>
-    <a href={`mailto:${profile.email}`}>联系我 <span aria-hidden="true">→</span></a>
-  </section>
+    <section class="skills-section site-wrapper" aria-label="关注方向">
+      <div class="skills-grid">
+        {focuses.map((focus, index) => (
+          <article class={`shape-${index + 1}`}>
+            <span class="skill-icon" aria-hidden="true">{focus.icon}</span>
+            <h2>{focus.title}</h2>
+            <p>{focus.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section-space">
+      <div class="site-wrapper">
+        <div class="posts-card">
+          <header class="section-header">
+            <div><h2>精选文章</h2><p>这里记录我做 Agent 项目时的设计取舍、验证方法和能力边界。</p></div>
+            <a class="outline-button" href="/blog">查看全部 <span aria-hidden="true">→</span></a>
+          </header>
+          <ul class="posts-list">
+            {posts.map((post) => (
+              <li><a href={`/blog/${post.id}`}><span>{post.data.title}</span><time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('zh-CN')}</time></a></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-space">
+      <div class="site-wrapper">
+        <header class="section-header project-header">
+          <div><h2>最近项目</h2><p>两个围绕 Agent 可靠性持续迭代的工程项目。</p></div>
+          <a class="outline-button" href="/projects">查看全部 <span aria-hidden="true">→</span></a>
+        </header>
+        <div class="projects-grid">
+          {profile.projects.map((project, index) => (
+            <a class={`project-card shape-${index + 1}`} href={`/projects/${project.slug}`}>
+              <h3>{project.name}</h3>
+              <p>{project.tagline}</p>
+              <span aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <aside class="contact-section">
+      <div class="site-wrapper">
+        <div class="contact-card">
+          <span class="contact-icon" aria-hidden="true">✦</span>
+          <div><h2>很高兴见到你！</h2><p>有任何问题或想法，欢迎随时联系我交流。</p></div>
+          <a class="primary-button" href="/about">联系我 <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </aside>
+  </div>
 </BaseLayout>
 
 <style>
-  .home-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, .42fr); align-items: center; gap: clamp(3rem, 9vw, 8rem); padding: clamp(4.25rem, 9vw, 7rem) 0 clamp(3.5rem, 7vw, 5rem); }
-  .intro-copy { max-width: 47rem; }
-  .hello { color: var(--muted-text); font-size: .82rem; }
-  h1 { margin-top: .3rem; font-size: clamp(2.25rem, 5vw, 3.65rem); font-weight: 730; letter-spacing: -.055em; line-height: 1.08; }
-  .identity { max-width: 39rem; margin-top: 1rem; color: var(--muted-text); font-size: clamp(.93rem, 1.35vw, 1rem); line-height: 1.9; }
-  .roles { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.25rem; }
-  .roles span { border-radius: 999px; color: #51469e; background: #eae6fb; padding: .35rem .6rem; font: 600 .65rem/1 var(--font-mono); }
-  .intro-links { display: flex; flex-wrap: wrap; gap: 1.1rem; margin-top: 1.4rem; }
-  .intro-links a { color: var(--page-text); font-size: .76rem; font-weight: 650; text-underline-offset: .22rem; }
-  .current-note { position: relative; border: 1px solid #d7d0bd; border-radius: .4rem 1rem 1rem .9rem; background: #fff9df; padding: 1.2rem; box-shadow: 0 1rem 2.5rem rgb(64 54 35 / .08); transform: rotate(1.2deg); }
-  .current-note .pin { position: absolute; top: -.45rem; left: 42%; width: 3.2rem; height: .85rem; background: rgb(255 255 255 / .65); transform: rotate(-4deg); }
-  .note-title { color: #807762; font: 650 .58rem/1 var(--font-mono); }
-  .current-note strong { display: block; margin-top: .8rem; color: #3f3a31; font-size: .9rem; }
-  .current-note > p:not(.note-title) { margin-top: .65rem; color: #726a59; font-size: .72rem; line-height: 1.75; }
-  .current-note small { display: flex; align-items: center; gap: .45rem; border-top: 1px solid #dfd5b8; margin-top: .9rem; padding-top: .9rem; color: #537063; font-size: .62rem; font-weight: 620; }
-  .current-note small i { width: .4rem; height: .4rem; border-radius: 50%; background: #2f9b76; box-shadow: 0 0 0 .18rem rgb(47 155 118 / .12); }
-  .focus-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
-  .focus-grid article { min-height: 10.5rem; padding: 1.5rem 1.6rem 1.5rem 0; }
-  .focus-grid article + article { border-left: 1px solid var(--hairline); padding-left: 1.6rem; }
-  .focus-grid article > span { color: var(--color-primary-600); font-size: 1rem; }
-  .focus-grid h2 { margin-top: 1.5rem; font-size: .92rem; font-weight: 690; }
-  .focus-grid p { max-width: 18rem; margin-top: .45rem; color: var(--muted-text); font-size: .75rem; line-height: 1.7; }
-  .home-section { padding: clamp(4.5rem, 9vw, 7rem) 0 0; }
-  .section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.6rem; }
-  .section-head h2, .hello-again h2 { font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 710; letter-spacing: -.035em; }
-  .section-head p { margin-top: .35rem; color: var(--muted-text); font-size: .76rem; }
-  .section-head > a { flex: none; color: var(--page-text); font-size: .72rem; font-weight: 650; text-underline-offset: .22rem; }
-  .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .project-card { overflow: hidden; border: 1px solid #d9d3eb; border-radius: 1rem; background: #eeeaf9; transition: transform 180ms ease, box-shadow 180ms ease; }
-  .project-card.oa-card { border-color: #cddfd8; background: #e8f2ed; }
-  .project-card:hover { transform: translateY(-.18rem); box-shadow: 0 1rem 2.4rem rgb(57 48 34 / .08); }
-  .project-main { display: block; color: inherit; padding: 1.2rem; text-decoration: none; }
-  .project-top { display: flex; justify-content: space-between; color: #70678b; font: 600 .58rem/1 var(--font-mono); }
-  .mini-flow { display: flex; align-items: center; gap: .4rem; min-height: 5.5rem; margin-top: .75rem; }
-  .mini-flow i { position: relative; border: 1px solid rgb(91 77 167 / .2); border-radius: 999px; color: #554d68; background: rgb(255 253 248 / .72); padding: .36rem .48rem; font: 550 .53rem/1 var(--font-mono); font-style: normal; }
-  .mini-flow i + i::before { position: absolute; top: 50%; right: 100%; width: .42rem; border-top: 1px solid rgb(91 77 167 / .3); content: ''; }
-  .project-card h3 { font-size: 1.2rem; font-weight: 710; letter-spacing: -.03em; }
-  .project-card .project-main > p { max-width: 33rem; margin-top: .5rem; color: #645d72; font-size: .76rem; line-height: 1.75; }
-  .project-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid rgb(90 75 170 / .14); padding: .75rem 1.2rem; color: #70678b; font: 550 .56rem/1.4 var(--font-mono); }
-  .project-foot a { flex: none; color: inherit; text-underline-offset: .2rem; }
-  .oa-card .project-top, .oa-card .project-foot { color: #527365; }
-  .oa-card .mini-flow i { border-color: rgb(50 112 87 / .18); color: #466458; }
-  .oa-card .project-main > p { color: #587066; }
-  .oa-card .project-foot { border-color: rgb(50 112 87 / .14); }
-  .writing { padding-top: clamp(4.5rem, 9vw, 7rem); }
-  .post-list { margin: 0; padding: 0; list-style: none; }
-  .post-list li { border-top: 1px solid var(--hairline); }
-  .post-list li:last-child { border-bottom: 1px solid var(--hairline); }
-  .post-list a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 2rem; color: inherit; padding: 1.35rem 0; text-decoration: none; }
-  .post-list h3 { font-size: .92rem; font-weight: 680; line-height: 1.55; transition: color 160ms ease; }
-  .post-list p { max-width: 50rem; margin-top: .35rem; color: var(--muted-text); font-size: .74rem; line-height: 1.7; }
-  .post-list time { color: var(--muted-text); font: 550 .6rem/1.5 var(--font-mono); }
-  .post-list a:hover h3 { color: var(--color-primary-600); }
-  .hello-again { display: flex; align-items: end; justify-content: space-between; gap: 2rem; border-top: 1px solid var(--hairline); margin-top: clamp(4.5rem, 9vw, 7rem); padding-top: clamp(3.5rem, 7vw, 5rem); }
-  .hello-again p { margin-top: .5rem; color: var(--muted-text); font-size: .78rem; line-height: 1.75; }
-  .hello-again a { flex: none; color: var(--page-text); font-size: .76rem; font-weight: 650; text-underline-offset: .22rem; }
-  :global(.dark) .roles span { color: #cfc8ff; background: #302b42; }
-  :global(.dark) .current-note { border-color: #5b513b; background: #352f20; }
-  :global(.dark) .current-note strong { color: #f4ead0; }
-  :global(.dark) .current-note > p:not(.note-title), :global(.dark) .note-title { color: #b7aa88; }
-  :global(.dark) .project-card { border-color: #443d5d; background: #292535; }
-  :global(.dark) .project-card.oa-card { border-color: #365147; background: #1f2b26; }
-  :global(.dark) .mini-flow i { color: #ddd7ee; background: rgb(37 33 45 / .85); }
-  :global(.dark) .oa-card .mini-flow i { color: #dcece5; background: rgb(34 47 42 / .9); }
-  :global(.dark) .project-card .project-main > p { color: #aaa1b8; }
-  :global(.dark) .oa-card .project-main > p { color: #9fb8ad; }
-  @media (max-width: 760px) { .home-intro { grid-template-columns: 1fr; gap: 2.5rem; } .current-note { max-width: 24rem; } .focus-grid { grid-template-columns: 1fr; } .focus-grid article { min-height: auto; padding: 1.3rem 0; } .focus-grid article + article { border-top: 1px solid var(--hairline); border-left: 0; padding-left: 0; } .focus-grid h2 { margin-top: .7rem; } .project-grid { grid-template-columns: 1fr; } }
-  @media (max-width: 520px) { .home-intro { padding-top: 3.5rem; } .mini-flow { overflow: hidden; } .section-head, .hello-again { align-items: flex-start; flex-direction: column; gap: .9rem; } .post-list a { grid-template-columns: 1fr; gap: .5rem; } }
-  @media (prefers-reduced-motion: reduce) { .project-card, .post-list h3 { transition: none; } }
+  .page-wrapper { overflow: hidden; }
+  .hero-section { padding-block: 3rem; }
+  .hero-grid { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 3rem; max-width: 56rem; margin: 0 auto; }
+  .hero-copy h1 { margin: 0; font-size: 1.875rem; font-weight: 720; line-height: 1.2; }
+  .hero-copy > p { max-width: 40ch; margin-top: .75rem; color: var(--muted-text); font-size: clamp(1.12rem, 2.2vw, 1.55rem); line-height: 1.55; }
+  .roles { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+  .roles span { border-radius: 999px; padding: .48rem .85rem; font-size: .78rem; font-weight: 600; }
+  .roles span:first-child { color: var(--primary-contrast); background: var(--primary); }
+  .roles span:last-child { color: #fff; background: var(--secondary); }
+  .avatar-wrap { position: relative; }
+  .avatar-wrap::before { position: absolute; z-index: -1; inset: -1rem; border-radius: 65% 35% 46% 54% / 42% 60% 40% 58%; background: var(--surface-soft); content: ''; transform: rotate(5deg); }
+  .avatar-wrap img { width: 240px; height: 240px; border: 4px solid var(--page-bg); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; object-fit: cover; box-shadow: var(--shadow-lg); transition: transform .3s ease; }
+  .avatar-wrap img:hover { transform: rotate(-2deg) scale(1.02); }
+  .skills-section { padding-block: 2rem; }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .skills-grid article { display: flex; min-height: 13rem; flex-direction: column; gap: 1rem; border: 1px solid var(--hairline); background: var(--surface-soft); padding: 1.5rem; transition: transform .3s ease, box-shadow .3s ease; }
+  .skills-grid article:hover { transform: translateY(-.2rem); box-shadow: var(--shadow-md); }
+  .shape-1 { border-radius: var(--radius-3xl) var(--radius-lg) var(--radius-2xl) var(--radius-xl); }
+  .shape-2 { border-radius: var(--radius-xl) var(--radius-2xl) var(--radius-lg) var(--radius-3xl); }
+  .shape-3 { border-radius: var(--radius-lg) var(--radius-3xl) var(--radius-xl) var(--radius-2xl); }
+  .skill-icon { display: grid; width: 3.5rem; height: 3.5rem; place-items: center; border-radius: var(--radius-xl); color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); font-size: 1.35rem; font-weight: 700; transition: color .2s ease, background .2s ease; }
+  .skills-grid article:hover .skill-icon { color: var(--primary-contrast); background: var(--primary); }
+  .skills-grid h2, .section-header h2, .contact-card h2 { font-family: var(--font-brand); font-size: 1.6rem; font-weight: 650; }
+  .skills-grid p { color: var(--muted-text); font-size: .95rem; line-height: 1.65; }
+  .section-space { padding-block: 2rem; }
+  .posts-card { border: 1px solid var(--hairline); border-radius: var(--radius-2xl); background: color-mix(in srgb, var(--surface) 60%, transparent); padding: 3rem; box-shadow: var(--shadow-sm); }
+  .section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
+  .section-header > div { display: flex; flex-direction: column; gap: .5rem; }
+  .section-header p { color: var(--muted-text); font-size: .95rem; }
+  .outline-button, .primary-button { display: inline-flex; flex: none; align-items: center; justify-content: center; gap: .55rem; border-radius: 999px; padding: .78rem 1.25rem; font-size: .84rem; font-weight: 650; text-decoration: none; transition: transform .2s ease, color .2s ease, background .2s ease; }
+  .outline-button { border: 2px solid var(--primary); color: var(--primary); }
+  .outline-button:hover { color: var(--primary-contrast); background: var(--primary); transform: scale(1.03); }
+  .primary-button { color: var(--primary-contrast); background: var(--primary); box-shadow: var(--shadow-md); }
+  .primary-button:hover { transform: scale(1.03); }
+  .posts-list { display: flex; flex-direction: column; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+  .posts-list li { border-radius: var(--radius-lg); }
+  .posts-list li:hover { background: var(--surface-soft); }
+  .posts-list a { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; color: inherit; padding: 1rem; text-decoration: none; }
+  .posts-list a > span { font-size: 1.08rem; font-weight: 520; }
+  .posts-list li:hover a > span { color: var(--primary); }
+  .posts-list time { flex: none; color: var(--muted-text); font-size: .78rem; }
+  .project-header { margin-bottom: 2rem; }
+  .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+  .project-card { position: relative; display: flex; min-height: 12rem; flex-direction: column; gap: .75rem; overflow: hidden; border: 1px solid var(--hairline); color: inherit; background: var(--surface-soft); padding: 1.5rem; text-decoration: none; transition: transform .3s ease, box-shadow .3s ease; }
+  .project-card:hover { transform: translateY(-.25rem); box-shadow: var(--shadow-md); }
+  .project-card h3 { font-family: var(--font-brand); font-size: 1.6rem; font-weight: 650; transition: color .2s ease; }
+  .project-card:hover h3 { color: var(--primary); }
+  .project-card p { max-width: 36rem; color: var(--muted-text); font-size: .95rem; line-height: 1.65; }
+  .project-card > span { position: absolute; right: 1.5rem; bottom: 1.35rem; color: var(--primary); font-size: 1.3rem; }
+  .contact-section { padding: 4rem 0; }
+  .contact-card { display: flex; align-items: center; gap: 1.5rem; border: 1px solid var(--hairline); border-radius: var(--radius-2xl); background: var(--surface-soft); padding: 3rem; }
+  .contact-icon { display: grid; width: 4rem; height: 4rem; flex: none; place-items: center; border-radius: var(--radius-xl); color: var(--primary-contrast); background: var(--primary); font-size: 1.25rem; }
+  .contact-card > div { flex: 1; }
+  .contact-card p { margin-top: .45rem; color: var(--muted-text); }
+  @media (max-width: 799px) {
+    .hero-section { padding-block: 2rem; }
+    .hero-grid { display: flex; flex-direction: column-reverse; gap: 1.5rem; text-align: center; }
+    .hero-copy > p { margin-inline: auto; font-size: 1.1rem; }
+    .roles { justify-content: center; }
+    .avatar-wrap img { width: 160px; height: 160px; }
+    .skills-grid, .projects-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .skills-grid article { min-height: auto; }
+    .posts-card { padding: 2rem 1.25rem; }
+    .section-header { align-items: flex-start; flex-direction: column; gap: 1.25rem; }
+    .contact-card { align-items: center; flex-direction: column; padding: 2.5rem 1.5rem; text-align: center; }
+  }
+  @media (max-width: 520px) { .posts-list a { align-items: flex-start; flex-direction: column; gap: .35rem; } }
 </style>

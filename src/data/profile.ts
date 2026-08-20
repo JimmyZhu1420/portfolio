@@ -1,5 +1,3 @@
-export type ProjectTone = 'violet' | 'emerald';
-
 export interface ProjectMetric {
   value: string;
   label: string;
@@ -24,7 +22,6 @@ export interface Project {
   year: string;
   status: string;
   featured: boolean;
-  tone: ProjectTone;
   flow: string[];
   metrics: ProjectMetric[];
   challenge: string[];
@@ -133,7 +130,6 @@ export const profile: Profile = {
       year: '2026',
       status: '公开源码',
       featured: true,
-      tone: 'violet',
       flow: ['PR Diff', '任务规划', '并行审查', '证据验证', '报告 / 修复'],
       metrics: [
         { value: '58 / 58', label: '自动化测试通过' },
@@ -193,7 +189,6 @@ export const profile: Profile = {
       year: '2026',
       status: '本地迭代 · 仓库待公开',
       featured: true,
-      tone: 'emerald',
       flow: ['病例输入', '任务规划', '检索 / 影像', '反思校验', '证据 / 报告'],
       metrics: [
         { value: '166 + 1', label: '后端通过 / 跳过' },

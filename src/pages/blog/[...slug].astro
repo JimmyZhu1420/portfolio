@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Tag from '../../components/Tag.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -13,74 +12,60 @@ export async function getStaticPaths() {
 }
 
 const { post, newer, older } = Astro.props;
-const { Content, headings } = await render(post);
-const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const { Content } = await render(post);
+const articleText = (post.body ?? '').replace(/[`#>*_\[\]()!-]/g, '').replace(/\s+/g, '');
+const charCount = articleText.length;
+const readingMinutes = Math.max(1, Math.ceil(charCount / 400));
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} active="/blog" article socialImage={null}>
-  <article class="article-shell">
-    <a class="back-link" href="/blog"><span aria-hidden="true">←</span> 返回全部文章</a>
-    <header>
-      <p class="eyebrow">PROJECT NOTE</p>
-      <h1>{post.data.title}</h1>
-      <p class="description">{post.data.description}</p>
-      <div class="article-meta">
-        <time datetime={post.data.pubDate.toISOString()}>发布于 {post.data.pubDate.toLocaleDateString('zh-CN')}</time>
-        {post.data.updatedDate && <time datetime={post.data.updatedDate.toISOString()}>更新于 {post.data.updatedDate.toLocaleDateString('zh-CN')}</time>}
-        <div>{post.data.tags.map((tag) => <Tag label={tag} />)}</div>
-      </div>
-    </header>
-
-    <div class="article-grid">
-      {
-        toc.length > 0 && (
-          <aside aria-label="文章目录">
-            <p>目录</p>
-            <ol>
-              {toc.map((heading) => (
-                <li class:list={[heading.depth === 3 && 'nested']}><a href={`#${heading.slug}`}>{heading.text}</a></li>
-              ))}
-            </ol>
-          </aside>
-        )
-      }
-      <div class="prose prose-slate max-w-none dark:prose-invert">
-        <Content />
-      </div>
-    </div>
-
-    <nav class="post-nav" aria-label="相邻文章">
-      {older ? <a href={`/blog/${older.id}`}><span>较早一篇</span><strong>← {older.data.title}</strong></a> : <span />}
-      {newer ? <a class="newer" href={`/blog/${newer.id}`}><span>较新一篇</span><strong>{newer.data.title} →</strong></a> : <span />}
-    </nav>
-  </article>
+  <div class="site-wrapper article-shell">
+    <article>
+      <a class="back-link" href="/blog">← 返回文章列表</a>
+      <header>
+        <h1>{post.data.title}</h1>
+        <div class="meta">
+          <time datetime={post.data.pubDate.toISOString()}>发布于：{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
+          <span>·</span><span>{charCount} 字</span><span>·</span><span>{readingMinutes} 分钟</span>
+        </div>
+        <div class="tags">{post.data.tags.map((tag) => <span>{tag}</span>)}</div>
+      </header>
+      <div class="article-prose"><Content /></div>
+      <nav class="post-nav" aria-label="相邻文章">
+        {older ? <a href={`/blog/${older.id}`}><span>较早一篇</span><strong>← {older.data.title}</strong></a> : <span />}
+        {newer ? <a class="newer" href={`/blog/${newer.id}`}><span>较新一篇</span><strong>{newer.data.title} →</strong></a> : <span />}
+      </nav>
+    </article>
+  </div>
 </BaseLayout>
 
 <style>
-  .article-shell { padding: clamp(3rem, 8vw, 6rem) 0 1rem; }
-  .back-link { display: inline-flex; gap: .45rem; color: var(--muted-text); font-size: .78rem; font-weight: 620; text-underline-offset: .25rem; }
-  header { max-width: 54rem; margin-top: clamp(2.5rem, 6vw, 4.5rem); }
-  h1 { max-width: 21ch; margin-top: .8rem; font-size: clamp(2.3rem, 5.5vw, 4.6rem); font-weight: 780; letter-spacing: -.055em; line-height: 1.08; }
-  .description { max-width: 46rem; margin-top: 1.2rem; color: var(--muted-text); font-size: .98rem; line-height: 1.85; }
-  .article-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.2rem; margin-top: 1.5rem; color: var(--muted-text); font: 550 .68rem/1.5 var(--font-mono); }
-  .article-meta > div { display: flex; flex-wrap: wrap; gap: .35rem; }
-  .article-grid { display: grid; grid-template-columns: minmax(9rem, 13rem) minmax(0, 46rem); gap: clamp(2rem, 7vw, 6rem); align-items: start; border-top: 1px solid var(--hairline); margin-top: clamp(2.5rem, 6vw, 4.5rem); padding-top: clamp(2.5rem, 6vw, 4.5rem); }
-  aside { position: sticky; top: 6.2rem; border-left: 1px solid var(--hairline); padding-left: 1rem; }
-  aside > p { color: var(--page-text); font-size: .72rem; font-weight: 700; }
-  aside ol { margin: .8rem 0 0; padding: 0; list-style: none; }
-  aside li { margin-top: .55rem; }
-  aside li.nested { padding-left: .75rem; }
-  aside a { color: var(--muted-text); font-size: .72rem; line-height: 1.5; text-decoration: none; }
-  aside a:hover { color: var(--color-primary-500); }
-  .prose { color: var(--page-text); font-size: .95rem; line-height: 1.9; }
-  .prose :global(h2), .prose :global(h3) { scroll-margin-top: 6rem; letter-spacing: -.025em; }
-  .prose :global(a) { color: var(--color-primary-600); text-underline-offset: .2rem; }
-  .prose :global(code) { font-family: var(--font-mono); }
-  .post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--hairline); margin-top: clamp(3.5rem, 7vw, 6rem); padding-top: 1.5rem; }
+  .article-shell { padding-block: 2.5rem 7rem; }
+  article { max-width: 52rem; margin: 0 auto; }
+  .back-link { color: var(--muted-text); font-size: .78rem; text-decoration: none; }
+  .back-link:hover { color: var(--primary); }
+  header { padding: 2.5rem 0 3rem; text-align: center; }
+  h1 { margin: 0 auto; font-family: var(--font-brand); font-size: clamp(2rem, 5vw, 3rem); font-weight: 680; letter-spacing: -.02em; line-height: 1.3; }
+  .meta { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; margin-top: 1.1rem; color: var(--muted-text); font-size: .78rem; }
+  .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; margin-top: 1rem; }
+  .tags span { border-radius: 999px; color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); padding: .32rem .6rem; font-size: .7rem; }
+  .article-prose { color: var(--page-text); font-size: 1rem; line-height: 1.9; }
+  .article-prose :global(h2) { margin: 2.7rem 0 1rem; font-family: var(--font-brand); font-size: 1.8rem; font-weight: 650; line-height: 1.35; }
+  .article-prose :global(h3) { margin: 2.2rem 0 .8rem; font-family: var(--font-brand); font-size: 1.35rem; font-weight: 650; }
+  .article-prose :global(p) { margin: 1rem 0; }
+  .article-prose :global(ul), .article-prose :global(ol) { display: grid; gap: .4rem; margin: 1rem 0; padding-left: 1.5rem; }
+  .article-prose :global(li::marker) { color: var(--primary); }
+  .article-prose :global(a) { color: var(--primary); text-underline-offset: .18rem; }
+  .article-prose :global(blockquote) { border-left: 4px solid var(--primary); margin: 1.5rem 0; border-radius: 0 var(--radius-md) var(--radius-md) 0; color: var(--muted-text); background: var(--surface-soft); padding: .9rem 1.2rem; }
+  .article-prose :global(pre) { overflow-x: auto; border: 1px solid var(--hairline); border-radius: var(--radius-md); background: var(--surface-soft) !important; padding: 1rem; }
+  .article-prose :global(code) { font-family: var(--font-mono); font-size: .88em; }
+  .article-prose :global(:not(pre) > code) { border-radius: .35rem; background: var(--surface-soft); padding: .15rem .32rem; }
+  .article-prose :global(img) { border-radius: var(--radius-lg); }
+  .post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--hairline); margin-top: 4rem; padding-top: 1.5rem; }
   .post-nav a { display: flex; min-width: 0; flex-direction: column; gap: .35rem; color: inherit; text-decoration: none; }
   .post-nav a.newer { text-align: right; }
-  .post-nav span { color: var(--muted-text); font-size: .68rem; }
+  .post-nav span { color: var(--muted-text); font-size: .7rem; }
   .post-nav strong { overflow: hidden; font-size: .82rem; text-overflow: ellipsis; white-space: nowrap; }
-  .post-nav a:hover strong { color: var(--color-primary-600); }
-  @media (max-width: 760px) { .article-grid { grid-template-columns: 1fr; } aside { position: static; } }
+  .post-nav a:hover strong { color: var(--primary); }
+  @media (max-width: 600px) { .article-shell { padding-top: 1.5rem; } header { padding-top: 2rem; } .article-prose { font-size: .95rem; } }
 </style>

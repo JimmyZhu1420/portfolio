@@ -1,127 +1,66 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Tag from '../components/Tag.astro';
 import { profile } from '../data/profile';
 ---
 
-<BaseLayout title="关于" description="关于朱佳明、两个 AI Agent 项目，以及这个网站。" active="/about">
-  <header class="page-head">
-    <p class="eyebrow">ABOUT ME</p>
-    <h1>关于我，也关于<br />这个<em>网站。</em></h1>
-    <p class="side-note" aria-hidden="true">还在学习，也还在继续做东西 ↗</p>
-  </header>
+<BaseLayout title="关于我/关于本站" description="关于朱佳明、AI Agent 工程实践和这个博客。" active="/about">
+  <div class="site-wrapper about-shell">
+    <article class="about-prose">
+      <h1>关于我/关于本站</h1>
 
-  <section class="intro section-line" aria-labelledby="hello-title">
-    <p class="section-no">01</p>
-    <div class="intro-copy">
-      <h2 id="hello-title">你好，我是朱佳明。</h2>
+      <h2>我是朱佳明</h2>
       {profile.about.map((paragraph) => <p>{paragraph}</p>)}
-      <p>现在住在{profile.location}，正在寻找 <strong>{profile.jobIntention}</strong> 的机会。比起把一串工具写成“熟练掌握”，我更愿意让项目本身说明我做过什么。</p>
-    </div>
-    <aside class="now-card" aria-label="当前状态">
-      <span>NOW</span>
-      <p>东华大学计算机科学与技术硕士在读</p>
-      <p>2025 — 2028</p>
-      <i aria-hidden="true"></i>
-      <small>开放实习机会</small>
-    </aside>
-  </section>
+      <p>目前在上海学习，正在寻找 AI Agent 开发实习机会，也会持续写下做项目时真正遇到的问题。</p>
+      <ul>
+        <li><a href="/projects/evoagent">EvoAgent</a>：探索可恢复、可评测的多智能体代码审查系统。</li>
+        <li><a href="/projects/oa">OA Evidence Agent</a>：探索带证据链、Claim 校验与安全边界的研究型 Agent。</li>
+        <li>关注 Agent Runtime、多智能体协作、可信 RAG、评测与可观测性。</li>
+      </ul>
 
-  <section id="skills" class="section-line capabilities" aria-labelledby="skills-title">
-    <p class="section-no">02</p>
-    <div>
-      <h2 id="skills-title">我最近在关心什么</h2>
-      <p class="section-intro">能力不画百分比。下面每一项，都可以继续追到项目案例、实现细节与验证记录。</p>
-      <ol>
-        {profile.capabilities.map((capability) => (
-          <li>
-            <span>{capability.index}</span>
-            <div>
-              <h3>{capability.title}</h3>
-              <p>{capability.description}</p>
-              <div class="tag-list">{capability.technologies.map((technology) => <Tag label={technology} />)}</div>
-            </div>
-            <a href={capability.href}>{capability.evidence} <span aria-hidden="true">↗</span></a>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
+      <h3>我的技术栈有</h3>
+      <ul>
+        <li>Agent：LangGraph、Agent Runtime、Tool Registry、Memory、Checkpoint</li>
+        <li>后端：Python、FastAPI、PostgreSQL、Redis Streams</li>
+        <li>检索与模型：Hybrid RAG、BGE、Qdrant、BioMedCLIP</li>
+        <li>前端与工程：Astro、Vue 3、JavaScript、Docker、OpenTelemetry</li>
+      </ul>
 
-  <section id="focus" class="section-line split-section" aria-labelledby="education-title">
-    <p class="section-no">03</p>
-    <div>
-      <h2 id="education-title">学习经历</h2>
-      <ol class="timeline">
-        {profile.education.map((item) => <li>{item}</li>)}
-      </ol>
-    </div>
-    <div>
-      <h2>当前坐标</h2>
-      <div class="interest-list">{profile.researchInterests.map((interest) => <span>{interest}</span>)}</div>
-      <p>这些关键词最后都会落回两个项目：<a href="/projects/evoagent">EvoAgent</a> 和 <a href="/projects/oa">OA Evidence Agent</a>。</p>
-    </div>
-  </section>
+      <h3>教育经历</h3>
+      <ul>{profile.education.map((item) => <li>{item}</li>)}</ul>
 
-  <section class="section-line site-note" aria-labelledby="site-title">
-    <p class="section-no">04</p>
-    <div>
-      <h2 id="site-title">关于这个网站</h2>
-      <p>这是我的项目档案，也是技术笔记本。它用 Astro 构建，没有后台、评论区或复杂的内容系统。项目里的数字只写可核验的结果，能力边界也和功能一起展示。</p>
-      <p>视觉上，我喜欢干净的排版、纸张感和一点不太规整的手写痕迹。希望它读起来更像一个真实的人在讲自己做过的事，而不是一张套了网页外壳的产品宣传页。</p>
-      <div class="site-links">
-        <a href={`mailto:${profile.email}`}>给我写邮件 <span aria-hidden="true">→</span></a>
-        <a href={profile.social.github} target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <span aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-  </section>
+      <h3>关于本站</h3>
+      <p>本站是我的个人主站，用来展示项目、发布技术文章，也记录学习 AI Agent 和工程实践的过程。</p>
+      <p>网站使用以下技术构建：</p>
+      <ul>
+        <li><a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a></li>
+        <li><a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind CSS</a></li>
+        <li>Astro Content Collections</li>
+      </ul>
+
+      <h3>我的其他主页</h3>
+      <ul><li><a href={profile.social.github} target="_blank" rel="noopener noreferrer">GitHub</a></li></ul>
+
+      <h3>联系方式</h3>
+      <p>如果你想聊开源、AI、Agent、编程学习或实习机会，欢迎通过下面的方式联系我：</p>
+      <ul>
+        <li>微信：{profile.social.wechat}</li>
+        <li>邮箱：<a href={`mailto:${profile.email}`}>{profile.email}</a></li>
+      </ul>
+
+      <h3>很高兴见到你，欢迎来玩~</h3>
+    </article>
+  </div>
 </BaseLayout>
 
 <style>
-  .page-head { position: relative; padding: clamp(5rem, 11vw, 9rem) 0 clamp(4rem, 8vw, 6.5rem); }
-  h1 { max-width: 13ch; margin-top: .8rem; font-size: clamp(2.8rem, 6.5vw, 5.6rem); font-weight: 710; letter-spacing: -.065em; line-height: 1.04; }
-  h1 em { color: var(--color-primary-600); font-style: normal; }
-  .side-note { position: absolute; right: 6%; bottom: 27%; color: var(--color-primary-600); font-family: 'KaiTi', 'STKaiti', serif; font-size: .84rem; transform: rotate(-3deg); }
-  .section-line { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 4.5rem); border-top: 1px solid var(--hairline); padding: clamp(4rem, 8vw, 6.5rem) 0; }
-  .section-no { color: var(--color-primary-600); font: 650 .65rem/1.5 var(--font-mono); }
-  h2 { font-size: clamp(1.75rem, 3.5vw, 2.7rem); font-weight: 710; letter-spacing: -.045em; line-height: 1.18; }
-  .intro { grid-template-columns: 3rem minmax(0, 1fr) minmax(15rem, .46fr); }
-  .intro-copy { max-width: 47rem; }
-  .intro-copy > p { margin-top: 1.15rem; color: var(--muted-text); font-size: .94rem; line-height: 1.95; }
-  .intro-copy strong { color: var(--page-text); font-weight: 680; }
-  .now-card { position: relative; align-self: start; border: 1px solid #d7d0bd; border-radius: .4rem 1rem 1rem .9rem; background: #fff9df; padding: 1.25rem; box-shadow: 0 1rem 2.5rem rgb(64 54 35 / .08); transform: rotate(1.5deg); }
-  .now-card::before { position: absolute; top: -.5rem; left: 35%; width: 3.2rem; height: .9rem; background: rgb(255 255 255 / .62); content: ''; transform: rotate(-4deg); }
-  .now-card > span { color: #807762; font: 650 .6rem/1 var(--font-mono); }
-  .now-card p { margin-top: .9rem; color: #3f3a31; font-size: .82rem; font-weight: 650; line-height: 1.7; }
-  .now-card p + p { margin-top: .15rem; color: #817968; font: 550 .62rem/1.5 var(--font-mono); }
-  .now-card i { display: block; border-top: 1px solid #dfd5b8; margin: 1rem 0; }
-  .now-card small { display: inline-flex; align-items: center; gap: .45rem; color: #537063; font-size: .64rem; font-weight: 620; }
-  .now-card small::before { width: .42rem; height: .42rem; border-radius: 50%; background: #2f9b76; content: ''; }
-  .capabilities > div { min-width: 0; }
-  .section-intro { max-width: 42rem; margin-top: .9rem; color: var(--muted-text); font-size: .86rem; line-height: 1.85; }
-  .capabilities ol { margin: 2.4rem 0 0; padding: 0; list-style: none; }
-  .capabilities li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: 1rem; border-top: 1px solid var(--hairline); padding: 1.5rem 0; }
-  .capabilities li:last-child { border-bottom: 1px solid var(--hairline); }
-  .capabilities li > span { color: var(--color-primary-600); font: 650 .64rem/1.6 var(--font-mono); }
-  .capabilities h3 { font-size: 1rem; font-weight: 690; }
-  .capabilities li p { max-width: 48rem; margin-top: .45rem; color: var(--muted-text); font-size: .82rem; line-height: 1.78; }
-  .tag-list { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .8rem; }
-  .capabilities li > a { color: var(--page-text); font-size: .72rem; font-weight: 650; text-underline-offset: .22rem; }
-  .split-section { grid-template-columns: 3rem 1fr 1fr; }
-  .timeline { margin: 1.6rem 0 0; padding: 0; list-style: none; }
-  .timeline li { position: relative; border-left: 1px solid var(--hairline); padding: 0 0 1.4rem 1.2rem; color: var(--muted-text); font-size: .82rem; line-height: 1.75; }
-  .timeline li::before { position: absolute; top: .4rem; left: -.22rem; width: .42rem; height: .42rem; border-radius: 50%; background: var(--color-primary-500); content: ''; }
-  .interest-list { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.6rem; }
-  .interest-list span { border: 1px solid var(--hairline); border-radius: 999px; background: var(--surface); padding: .4rem .65rem; font-size: .68rem; }
-  .split-section > div:last-child > p { margin-top: 1.2rem; color: var(--muted-text); font-size: .82rem; line-height: 1.8; }
-  .split-section a, .site-note a { color: var(--page-text); font-weight: 650; text-underline-offset: .22rem; }
-  .site-note > div { max-width: 49rem; }
-  .site-note > div > p { margin-top: 1rem; color: var(--muted-text); font-size: .9rem; line-height: 1.95; }
-  .site-links { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 1.5rem; }
-  .site-links a { font-size: .78rem; }
-  :global(.dark) .now-card { border-color: #5b513b; background: #352f20; }
-  :global(.dark) .now-card p { color: #f4ead0; }
-  :global(.dark) .now-card p + p, :global(.dark) .now-card > span { color: #b7aa88; }
-  @media (max-width: 800px) { .intro, .split-section { grid-template-columns: 2rem 1fr; } .intro > .now-card, .split-section > div:last-child { grid-column: 2; } .side-note { display: none; } }
-  @media (max-width: 580px) { .section-line { grid-template-columns: 1fr; gap: .9rem; } .intro, .split-section { grid-template-columns: 1fr; } .intro > .now-card, .split-section > div:last-child { grid-column: 1; } .capabilities li { grid-template-columns: 2rem 1fr; } .capabilities li > a { grid-column: 2; } }
+  .about-shell { padding-block: 2rem 7rem; }
+  .about-prose { max-width: 48rem; margin: 0 auto; color: var(--page-text); font-size: 1rem; line-height: 1.9; }
+  h1 { margin: 0; padding: 2rem 0 1rem; font-family: var(--font-brand); font-size: clamp(1.9rem, 4vw, 2.65rem); font-weight: 680; letter-spacing: .04em; text-align: center; }
+  h2 { margin: 3rem 0 1rem; font-family: var(--font-brand); font-size: 1.9rem; font-weight: 650; }
+  h3 { margin: 2.4rem 0 .8rem; font-family: var(--font-brand); font-size: 1.35rem; font-weight: 650; }
+  p { margin: .85rem 0; }
+  ul { display: grid; gap: .45rem; margin: 1rem 0; padding-left: 1.4rem; }
+  li::marker { color: var(--primary); }
+  a { color: var(--primary); text-decoration: underline; text-underline-offset: .18rem; }
+  @media (max-width: 600px) { .about-shell { padding-top: 1rem; } .about-prose { font-size: .95rem; } }
 </style>

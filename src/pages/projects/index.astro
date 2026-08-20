@@ -1,40 +1,36 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectPreviewV2 from '../../components/ProjectPreviewV2.astro';
 import { profile } from '../../data/profile';
 ---
 
-<BaseLayout title="项目" description="两个 AI Agent 项目，以及我怎样验证它们真正做到了什么。" active="/projects">
-  <header class="page-head">
-    <p class="eyebrow">SELECTED WORK · 02</p>
-    <h1>我做过的两个<br /><em>Agent 项目。</em></h1>
-    <div class="head-note">
-      <p>它们解决的问题不同，但都在追问同一件事：模型做出的判断，怎样被约束、验证和追溯。</p>
-      <span aria-hidden="true">从问题出发，不从技术名词出发 ↘</span>
-    </div>
-  </header>
-
-  <section class="project-list" aria-label="项目列表">
-    {profile.projects.map((project, index) => <ProjectPreviewV2 project={project} index={index + 1} />)}
-  </section>
-
-  <aside class="working-note">
-    <span>still working on it</span>
-    <p>这两个项目都还在继续迭代。案例页展示的是已经实现并核验的部分；计划中的能力不会被写成既成事实。</p>
-  </aside>
+<BaseLayout title="项目" description="我开发和持续维护的 AI Agent 工程项目。" active="/projects">
+  <div class="site-wrapper page-shell">
+    <header class="page-header"><h1>项目</h1><p>我开发和持续维护的项目</p></header>
+    <section class="projects" aria-label="项目列表">
+      {profile.projects.map((project, index) => (
+        <a class={`project-card shape-${index + 1}`} href={`/projects/${project.slug}`}>
+          <h2>{project.name}</h2>
+          <p>{project.tagline}</p>
+          <div><span>{project.year}</span><span>{project.status}</span></div>
+        </a>
+      ))}
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .page-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, .55fr); align-items: end; gap: 3rem; padding: clamp(5rem, 11vw, 9rem) 0 clamp(4rem, 8vw, 6.5rem); }
-  .page-head > .eyebrow { grid-column: 1 / -1; }
-  h1 { max-width: 13ch; font-size: clamp(2.8rem, 6.5vw, 5.6rem); font-weight: 710; letter-spacing: -.065em; line-height: 1.03; }
-  h1 em { color: var(--color-primary-600); font-style: normal; }
-  .head-note { max-width: 31rem; padding-bottom: .35rem; }
-  .head-note p { color: var(--muted-text); font-size: .94rem; line-height: 1.9; }
-  .head-note span { display: block; margin-top: 1.2rem; color: var(--color-primary-600); font-family: 'KaiTi', 'STKaiti', serif; font-size: .82rem; transform: rotate(-1deg); }
-  .project-list { display: grid; gap: clamp(5.5rem, 12vw, 10rem); border-top: 1px solid var(--hairline); padding-top: clamp(4.5rem, 9vw, 7rem); }
-  .working-note { display: grid; grid-template-columns: 10rem minmax(0, 38rem); gap: 2rem; border-top: 1px solid var(--hairline); margin-top: clamp(5rem, 11vw, 9rem); padding-top: 1.5rem; }
-  .working-note span { color: var(--color-primary-600); font: 600 .63rem/1 var(--font-mono); letter-spacing: .06em; }
-  .working-note p { color: var(--muted-text); font-size: .84rem; line-height: 1.85; }
-  @media (max-width: 760px) { .page-head { grid-template-columns: 1fr; gap: 1.6rem; } .working-note { grid-template-columns: 1fr; gap: .75rem; } }
+  .page-shell { max-width: 64rem; padding-block: 3rem 7rem; }
+  .page-header { padding: 1rem 0 2.5rem; }
+  h1 { margin: 0; font-family: var(--font-brand); font-size: clamp(2.1rem, 5vw, 3rem); font-weight: 680; letter-spacing: -.025em; }
+  .page-header p { margin-top: .6rem; color: var(--muted-text); font-size: 1rem; }
+  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .project-card { display: flex; min-height: 15rem; flex-direction: column; border: 1px solid var(--hairline); color: inherit; background: var(--surface-soft); padding: 1.75rem; text-decoration: none; transition: transform .3s ease, box-shadow .3s ease; }
+  .shape-1 { border-radius: var(--radius-3xl) var(--radius-lg) var(--radius-2xl) var(--radius-lg); }
+  .shape-2 { border-radius: var(--radius-lg) var(--radius-2xl) var(--radius-lg) var(--radius-3xl); }
+  .project-card:hover { transform: translateY(-.25rem); box-shadow: var(--shadow-md); }
+  h2 { font-family: var(--font-brand); font-size: 1.65rem; font-weight: 650; transition: color .2s ease; }
+  .project-card:hover h2 { color: var(--primary); }
+  .project-card > p { margin-top: .65rem; color: var(--muted-text); line-height: 1.65; }
+  .project-card > div { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: auto; padding-top: 1.5rem; color: var(--muted-text); font-size: .72rem; }
+  @media (max-width: 700px) { .page-shell { padding-top: 2rem; } .projects { grid-template-columns: 1fr; } .project-card { min-height: 12rem; } }
 </style>

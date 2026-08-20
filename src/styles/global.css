@@ -6,34 +6,34 @@
 @theme {
   --font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, ui-monospace, monospace;
-  --color-primary-400: #8b80ff;
-  --color-primary-500: #6558f5;
-  --color-primary-600: #5547df;
-  --color-ink: #111827;
-  --color-paper: #fbfcfe;
-  --color-mist: #f5f7fb;
+  --color-primary-400: #8175e5;
+  --color-primary-500: #6c5edb;
+  --color-primary-600: #5d50c6;
+  --color-ink: #24221f;
+  --color-paper: #f8f6f1;
+  --color-mist: #efede7;
 }
 
 :root {
   color-scheme: light;
-  --page-bg: #fbfcfe;
-  --page-text: #111827;
-  --muted-text: #5f6b7a;
-  --surface: #ffffff;
-  --surface-soft: #f5f7fb;
-  --hairline: rgb(100 116 139 / 0.18);
+  --page-bg: #f8f6f1;
+  --page-text: #24221f;
+  --muted-text: #6d6962;
+  --surface: #fffdf8;
+  --surface-soft: #efede7;
+  --hairline: rgb(74 68 59 / 0.16);
 }
 
 :root.dark {
   color-scheme: dark;
-  --color-primary-500: #8b80ff;
-  --color-primary-600: #a99fff;
-  --page-bg: #080d17;
-  --page-text: #e8edf5;
-  --muted-text: #9aa8ba;
-  --surface: #0f1725;
-  --surface-soft: #111b2b;
-  --hairline: rgb(148 163 184 / 0.18);
+  --color-primary-500: #9589ef;
+  --color-primary-600: #b0a7f6;
+  --page-bg: #171613;
+  --page-text: #f0ece4;
+  --muted-text: #aaa49b;
+  --surface: #211f1b;
+  --surface-soft: #292620;
+  --hairline: rgb(230 222 209 / 0.15);
 }
 
 html {
@@ -45,26 +45,13 @@ body {
   min-width: 320px;
   font-family: var(--font-sans);
   color: var(--page-text);
-  background:
-    radial-gradient(circle at 50% -15rem, rgb(101 88 245 / 0.09), transparent 30rem),
-    var(--page-bg);
+  background: var(--page-bg);
   text-rendering: optimizeLegibility;
 }
 
-body::before {
-  position: fixed;
-  z-index: -1;
-  inset: 0;
-  background-image: linear-gradient(to right, rgb(100 116 139 / 0.035) 1px, transparent 1px);
-  background-size: 5rem 100%;
-  content: '';
-  mask-image: linear-gradient(to bottom, black, transparent 42rem);
-  pointer-events: none;
-}
-
 ::selection {
-  color: #171233;
-  background: #dcd8ff;
+  color: #292334;
+  background: #dcd6ff;
 }
 
 a,
@@ -102,7 +89,6 @@ button {
   font-size: 0.72rem;
   font-weight: 650;
   letter-spacing: 0.11em;
-  text-transform: uppercase;
 }
 
 .section-shell {

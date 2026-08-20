@@ -1,190 +1,187 @@
 ---
 import { getCollection } from 'astro:content';
-import AgentLoopVisual from '../components/AgentLoopVisual.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import Tag from '../components/Tag.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { profile } from '../data/profile';
 
 const posts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+  .slice(0, 4);
 ---
 
 <BaseLayout title="首页" description={profile.tagline} active="/">
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="status-line"><i aria-hidden="true"></i>正在寻找 AI Agent 开发实习机会</p>
-      <p class="eyebrow">HELLO, I'M {profile.name}</p>
-      <h1>让 Agent 不只会回答，<br /><span>还能够可靠地完成任务。</span></h1>
-      <p class="hero-intro">
-        {profile.role}。我聚焦 Agent Runtime、多智能体协作、可信 RAG 与评测可观测性，
-        把大模型能力落成可验证、可复现的工程系统。
-      </p>
-      <div class="hero-actions">
-        <a class="primary" href="/projects">查看代表项目 <span aria-hidden="true">→</span></a>
-        <a href={profile.social.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-        <a class="text-link" href={`mailto:${profile.email}`}>联系我</a>
+  <header class="home-intro">
+    <div class="intro-copy">
+      <p class="hello">你好，我是</p>
+      <h1>朱佳明</h1>
+      <p class="identity">东华大学计算机硕士在读，正在学习怎样把 AI Agent 做成可靠、可验证的工程系统。</p>
+      <div class="roles" aria-label="身份与方向">
+        <span>Agent Builder</span><span>Developer</span><span>Writer</span>
       </div>
-      <ul class="hero-proof" aria-label="作品集概览">
-        <li><strong>02</strong><span>完整 Agent 项目</span></li>
-        <li><strong>GitHub</strong><span>EvoAgent 已公开</span></li>
-        <li><strong>Evidence</strong><span>测试与运行证据</span></li>
-      </ul>
+      <nav class="intro-links" aria-label="个人链接">
+        <a href={profile.social.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        <a href={`mailto:${profile.email}`}>Email <span aria-hidden="true">↗</span></a>
+        <a href="/about">关于我 <span aria-hidden="true">→</span></a>
+      </nav>
     </div>
-    <AgentLoopVisual />
+    <aside class="current-note" aria-label="当前状态">
+      <span class="pin" aria-hidden="true"></span>
+      <p class="note-title">NOW</p>
+      <strong>在上海学习和做项目</strong>
+      <p>最近围绕多智能体协作、可信 RAG 与评测方法继续迭代两个 Agent 项目。</p>
+      <small><i aria-hidden="true"></i>开放 AI Agent 开发实习机会</small>
+    </aside>
+  </header>
+
+  <section class="focus-grid" aria-label="关注方向">
+    <article>
+      <span aria-hidden="true">⌁</span>
+      <h2>Agent 系统</h2>
+      <p>让规划、工具调用、记忆与反思在明确预算内运行。</p>
+    </article>
+    <article>
+      <span aria-hidden="true">◎</span>
+      <h2>可信检索</h2>
+      <p>让回答保留来源、降级状态与清晰的能力边界。</p>
+    </article>
+    <article>
+      <span aria-hidden="true">✓</span>
+      <h2>评测与验证</h2>
+      <p>用测试、回放与证据门禁判断系统是否真的变好。</p>
+    </article>
   </section>
 
-  <section class="section-shell section-rule" aria-labelledby="focus-title">
-    <div class="section-heading split-heading">
+  <section class="home-section" aria-labelledby="project-title">
+    <header class="section-head">
       <div>
-        <p class="eyebrow">WHAT I WORK ON</p>
-        <h2 id="focus-title">我关注的问题</h2>
+        <h2 id="project-title">最近项目</h2>
+        <p>两个正在持续迭代的 AI Agent 工程项目。</p>
       </div>
-      <p>从模型能力到可靠系统，中间还有运行时、证据、评测和工程交付。</p>
-    </div>
-    <div class="capability-grid">
-      {profile.capabilities.map((capability) => (
-        <a class="capability-card" href={capability.href}>
-          <span class="capability-index">{capability.index}</span>
-          <h3>{capability.title}</h3>
-          <p>{capability.description}</p>
-          <div>{capability.technologies.map((technology) => <Tag label={technology} />)}</div>
-          <small>{capability.evidence} <i aria-hidden="true">→</i></small>
-        </a>
+      <a href="/projects">查看全部 <span aria-hidden="true">→</span></a>
+    </header>
+    <div class="project-grid">
+      {profile.projects.map((project, index) => (
+        <article class:list={['project-card', project.slug === 'oa' && 'oa-card']}>
+          <a class="project-main" href={`/projects/${project.slug}`}>
+            <div class="project-top">
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <small>{project.year}</small>
+            </div>
+            <div class="mini-flow" aria-hidden="true">
+              {project.flow.slice(0, 4).map((step) => <i>{step}</i>)}
+            </div>
+            <h3>{project.name}</h3>
+            <p>{project.tagline}</p>
+          </a>
+          <div class="project-foot">
+            <span>{project.tags.slice(0, 3).join(' · ')}</span>
+            {project.repositoryPublic && <a href={project.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.name} GitHub 仓库`}>GitHub ↗</a>}
+          </div>
+        </article>
       ))}
     </div>
   </section>
 
-  <section class="section-shell section-rule" aria-labelledby="project-title">
-    <div class="section-heading split-heading">
+  <section class="home-section writing" aria-labelledby="writing-title">
+    <header class="section-head">
       <div>
-        <p class="eyebrow">SELECTED WORK</p>
-        <h2 id="project-title">代表项目</h2>
+        <h2 id="writing-title">最近文章</h2>
+        <p>项目里的设计取舍、验证证据和失败边界。</p>
       </div>
-      <p>两个项目分别验证 Agent Runtime 与可信证据链；EvoAgent 已公开源码，两者都明确工程边界。</p>
-    </div>
-    <div class="project-list">
-      {profile.projects.map((project, index) => <ProjectCard project={project} reverse={index % 2 === 1} />)}
-    </div>
-    <a class="section-link" href="/projects">查看完整项目说明 <span aria-hidden="true">→</span></a>
+      <a href="/blog">查看全部 <span aria-hidden="true">→</span></a>
+    </header>
+    <ol class="post-list">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.id}`}>
+            <div>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+            </div>
+            <time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
+          </a>
+        </li>
+      ))}
+    </ol>
   </section>
 
-  {
-    posts.length > 0 && (
-      <section class="section-shell section-rule" aria-labelledby="writing-title">
-        <div class="section-heading split-heading">
-          <div>
-            <p class="eyebrow">FIELD NOTES</p>
-            <h2 id="writing-title">项目笔记</h2>
-          </div>
-          <a class="section-link inline" href="/blog">全部文章 <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="post-list">
-          {posts.map((post, index) => (
-            <a href={`/blog/${post.id}`}>
-              <span class="post-index">{String(index + 1).padStart(2, '0')}</span>
-              <div>
-                <h3>{post.data.title}</h3>
-                <p>{post.data.description}</p>
-                <time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
-              </div>
-              <i aria-hidden="true">↗</i>
-            </a>
-          ))}
-        </div>
-      </section>
-    )
-  }
-
-  <section class="about-strip section-rule" aria-labelledby="about-title">
-    <p class="eyebrow">A LITTLE MORE</p>
+  <section class="hello-again" aria-labelledby="hello-again-title">
     <div>
-      <h2 id="about-title">在上海学习，也在持续把想法做成系统。</h2>
-      <div>
-        <p>{profile.about[0]}</p>
-        <a class="section-link inline" href="/about">更多关于我 <span aria-hidden="true">→</span></a>
-      </div>
+      <h2 id="hello-again-title">很高兴见到你！</h2>
+      <p>如果你对项目有问题，或者想聊 Agent、实习和编程学习，欢迎随时联系我。</p>
     </div>
+    <a href={`mailto:${profile.email}`}>联系我 <span aria-hidden="true">→</span></a>
   </section>
 </BaseLayout>
 
 <style>
-  .hero { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(21rem, .92fr); align-items: center; gap: clamp(3rem, 7vw, 6.5rem); min-height: calc(100vh - 4.25rem); padding: clamp(4.5rem, 9vw, 7.5rem) 0; }
-  .hero-copy { max-width: 42rem; }
-  .status-line { display: inline-flex; align-items: center; gap: .5rem; margin-bottom: 2.3rem; border: 1px solid #dce4df; border-radius: 999px; color: #3c5b51; background: rgb(240 253 249 / .72); padding: .42rem .72rem; font-size: .72rem; font-weight: 600; }
-  .status-line i { width: .45rem; height: .45rem; border-radius: 50%; background: #10a37f; box-shadow: 0 0 0 .22rem rgb(16 163 127 / .13); }
-  h1 { max-width: 13ch; margin-top: .9rem; font-size: clamp(2.65rem, 6vw, 5.35rem); font-weight: 780; letter-spacing: -.065em; line-height: 1.02; }
-  h1 span { color: #667085; }
-  .hero-intro { max-width: 42rem; margin-top: 1.6rem; color: var(--muted-text); font-size: clamp(.98rem, 1.5vw, 1.08rem); line-height: 1.9; }
-  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; margin-top: 2rem; }
-  .hero-actions a { display: inline-flex; min-height: 2.9rem; align-items: center; gap: .45rem; border: 1px solid var(--hairline); border-radius: 999px; color: var(--page-text); background: var(--surface); padding: 0 1.05rem; font-size: .84rem; font-weight: 650; text-decoration: none; transition: transform 160ms ease, border-color 160ms ease; }
-  .hero-actions a:hover { transform: translateY(-.15rem); border-color: #9d93ff; }
-  .hero-actions a.primary { border-color: #111827; color: #fff; background: #111827; }
-  .hero-actions a.text-link { border-color: transparent; background: transparent; text-decoration: underline; text-underline-offset: .25rem; }
-  .hero-proof { display: flex; flex-wrap: wrap; gap: 1.6rem; margin: 2.4rem 0 0; padding: 0; list-style: none; }
-  .hero-proof li { display: flex; flex-direction: column; gap: .16rem; }
-  .hero-proof strong { color: #273244; font: 700 .75rem/1.2 var(--font-mono); }
-  .hero-proof span { color: var(--muted-text); font-size: .68rem; }
-
-  .section-heading h2, .about-strip h2 { margin-top: .65rem; font-size: clamp(2rem, 4vw, 3.3rem); font-weight: 760; letter-spacing: -.05em; line-height: 1.12; }
-  .split-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 2.5rem; }
-  .split-heading > p { max-width: 28rem; color: var(--muted-text); font-size: .9rem; line-height: 1.8; }
-  .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; }
-  .capability-card { display: flex; min-height: 20rem; flex-direction: column; border: 1px solid var(--hairline); border-radius: 1.25rem; color: inherit; background: color-mix(in srgb, var(--surface) 86%, transparent); padding: 1.4rem; text-decoration: none; transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
-  .capability-card:hover { transform: translateY(-.25rem); border-color: #b3abff; box-shadow: 0 20px 50px rgb(31 41 55 / .08); }
-  .capability-index { color: #8075ee; font: 650 .66rem/1 var(--font-mono); }
-  .capability-card h3 { margin-top: 2rem; font-size: 1.2rem; font-weight: 720; letter-spacing: -.025em; }
-  .capability-card > p { margin-top: .75rem; color: var(--muted-text); font-size: .85rem; line-height: 1.8; }
-  .capability-card > div { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: 1.2rem; }
-  .capability-card small { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 1.4rem; color: #4e5b6b; font-size: .73rem; font-weight: 650; }
-  .capability-card small i { font-style: normal; }
-  .project-list { margin-top: 1rem; }
-  .section-link { display: inline-flex; align-items: center; gap: .45rem; margin-top: 1.25rem; color: var(--page-text); font-size: .82rem; font-weight: 680; text-decoration: underline; text-underline-offset: .28rem; }
-  .section-link.inline { margin-top: 0; }
-
-  .post-list { margin-top: 2.75rem; border-top: 1px solid var(--hairline); }
-  .post-list a { display: grid; grid-template-columns: 3rem 1fr auto; gap: 1rem; align-items: start; border-bottom: 1px solid var(--hairline); color: inherit; padding: 1.5rem 0; text-decoration: none; }
-  .post-index { color: #8a96a6; font: 600 .68rem/1.5 var(--font-mono); }
-  .post-list h3 { font-size: 1.05rem; font-weight: 690; letter-spacing: -.018em; }
-  .post-list p { max-width: 48rem; margin-top: .35rem; color: var(--muted-text); font-size: .82rem; line-height: 1.65; }
-  .post-list time { display: block; margin-top: .55rem; color: #7c899a; font: 500 .65rem/1 var(--font-mono); }
-  .post-list a > i { color: #7c899a; font-style: normal; transition: transform 160ms ease; }
-  .post-list a:hover > i { transform: translate(.15rem, -.15rem); }
+  .home-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, .42fr); align-items: center; gap: clamp(3rem, 9vw, 8rem); padding: clamp(4.25rem, 9vw, 7rem) 0 clamp(3.5rem, 7vw, 5rem); }
+  .intro-copy { max-width: 47rem; }
+  .hello { color: var(--muted-text); font-size: .82rem; }
+  h1 { margin-top: .3rem; font-size: clamp(2.25rem, 5vw, 3.65rem); font-weight: 730; letter-spacing: -.055em; line-height: 1.08; }
+  .identity { max-width: 39rem; margin-top: 1rem; color: var(--muted-text); font-size: clamp(.93rem, 1.35vw, 1rem); line-height: 1.9; }
+  .roles { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.25rem; }
+  .roles span { border-radius: 999px; color: #51469e; background: #eae6fb; padding: .35rem .6rem; font: 600 .65rem/1 var(--font-mono); }
+  .intro-links { display: flex; flex-wrap: wrap; gap: 1.1rem; margin-top: 1.4rem; }
+  .intro-links a { color: var(--page-text); font-size: .76rem; font-weight: 650; text-underline-offset: .22rem; }
+  .current-note { position: relative; border: 1px solid #d7d0bd; border-radius: .4rem 1rem 1rem .9rem; background: #fff9df; padding: 1.2rem; box-shadow: 0 1rem 2.5rem rgb(64 54 35 / .08); transform: rotate(1.2deg); }
+  .current-note .pin { position: absolute; top: -.45rem; left: 42%; width: 3.2rem; height: .85rem; background: rgb(255 255 255 / .65); transform: rotate(-4deg); }
+  .note-title { color: #807762; font: 650 .58rem/1 var(--font-mono); }
+  .current-note strong { display: block; margin-top: .8rem; color: #3f3a31; font-size: .9rem; }
+  .current-note > p:not(.note-title) { margin-top: .65rem; color: #726a59; font-size: .72rem; line-height: 1.75; }
+  .current-note small { display: flex; align-items: center; gap: .45rem; border-top: 1px solid #dfd5b8; margin-top: .9rem; padding-top: .9rem; color: #537063; font-size: .62rem; font-weight: 620; }
+  .current-note small i { width: .4rem; height: .4rem; border-radius: 50%; background: #2f9b76; box-shadow: 0 0 0 .18rem rgb(47 155 118 / .12); }
+  .focus-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+  .focus-grid article { min-height: 10.5rem; padding: 1.5rem 1.6rem 1.5rem 0; }
+  .focus-grid article + article { border-left: 1px solid var(--hairline); padding-left: 1.6rem; }
+  .focus-grid article > span { color: var(--color-primary-600); font-size: 1rem; }
+  .focus-grid h2 { margin-top: 1.5rem; font-size: .92rem; font-weight: 690; }
+  .focus-grid p { max-width: 18rem; margin-top: .45rem; color: var(--muted-text); font-size: .75rem; line-height: 1.7; }
+  .home-section { padding: clamp(4.5rem, 9vw, 7rem) 0 0; }
+  .section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.6rem; }
+  .section-head h2, .hello-again h2 { font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 710; letter-spacing: -.035em; }
+  .section-head p { margin-top: .35rem; color: var(--muted-text); font-size: .76rem; }
+  .section-head > a { flex: none; color: var(--page-text); font-size: .72rem; font-weight: 650; text-underline-offset: .22rem; }
+  .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .project-card { overflow: hidden; border: 1px solid #d9d3eb; border-radius: 1rem; background: #eeeaf9; transition: transform 180ms ease, box-shadow 180ms ease; }
+  .project-card.oa-card { border-color: #cddfd8; background: #e8f2ed; }
+  .project-card:hover { transform: translateY(-.18rem); box-shadow: 0 1rem 2.4rem rgb(57 48 34 / .08); }
+  .project-main { display: block; color: inherit; padding: 1.2rem; text-decoration: none; }
+  .project-top { display: flex; justify-content: space-between; color: #70678b; font: 600 .58rem/1 var(--font-mono); }
+  .mini-flow { display: flex; align-items: center; gap: .4rem; min-height: 5.5rem; margin-top: .75rem; }
+  .mini-flow i { position: relative; border: 1px solid rgb(91 77 167 / .2); border-radius: 999px; color: #554d68; background: rgb(255 253 248 / .72); padding: .36rem .48rem; font: 550 .53rem/1 var(--font-mono); font-style: normal; }
+  .mini-flow i + i::before { position: absolute; top: 50%; right: 100%; width: .42rem; border-top: 1px solid rgb(91 77 167 / .3); content: ''; }
+  .project-card h3 { font-size: 1.2rem; font-weight: 710; letter-spacing: -.03em; }
+  .project-card .project-main > p { max-width: 33rem; margin-top: .5rem; color: #645d72; font-size: .76rem; line-height: 1.75; }
+  .project-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid rgb(90 75 170 / .14); padding: .75rem 1.2rem; color: #70678b; font: 550 .56rem/1.4 var(--font-mono); }
+  .project-foot a { flex: none; color: inherit; text-underline-offset: .2rem; }
+  .oa-card .project-top, .oa-card .project-foot { color: #527365; }
+  .oa-card .mini-flow i { border-color: rgb(50 112 87 / .18); color: #466458; }
+  .oa-card .project-main > p { color: #587066; }
+  .oa-card .project-foot { border-color: rgb(50 112 87 / .14); }
+  .writing { padding-top: clamp(4.5rem, 9vw, 7rem); }
+  .post-list { margin: 0; padding: 0; list-style: none; }
+  .post-list li { border-top: 1px solid var(--hairline); }
+  .post-list li:last-child { border-bottom: 1px solid var(--hairline); }
+  .post-list a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 2rem; color: inherit; padding: 1.35rem 0; text-decoration: none; }
+  .post-list h3 { font-size: .92rem; font-weight: 680; line-height: 1.55; transition: color 160ms ease; }
+  .post-list p { max-width: 50rem; margin-top: .35rem; color: var(--muted-text); font-size: .74rem; line-height: 1.7; }
+  .post-list time { color: var(--muted-text); font: 550 .6rem/1.5 var(--font-mono); }
   .post-list a:hover h3 { color: var(--color-primary-600); }
-
-  .about-strip { padding: clamp(4rem, 9vw, 7.5rem) 0 1rem; }
-  .about-strip > div { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 7vw, 6rem); align-items: start; margin-top: .65rem; }
-  .about-strip h2 { max-width: 15ch; margin-top: 0; }
-  .about-strip div > div p { color: var(--muted-text); font-size: .92rem; line-height: 1.9; }
-
-  :global(.dark) h1 span { color: #9aa8ba; }
-  :global(.dark) .status-line { border-color: #175e51; color: #9de8d3; background: rgb(6 78 59 / .22); }
-  :global(.dark) .hero-actions a.primary { border-color: #f8fafc; color: #111827; background: #f8fafc; }
-  :global(.dark) .hero-proof strong { color: #e8edf5; }
-  :global(.dark) .capability-card small { color: #a8b4c4; }
-
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; min-height: auto; }
-    .hero-copy { max-width: 47rem; }
-    .hero :global(.loop-visual) { max-width: 38rem; }
-    .capability-grid { grid-template-columns: 1fr; }
-    .capability-card { min-height: auto; }
-    .capability-card small { margin-top: 1.5rem; }
-  }
-
-  @media (max-width: 680px) {
-    .hero { padding-block: 4rem; }
-    .status-line { margin-bottom: 1.8rem; }
-    .hero-actions a.primary, .hero-actions a:not(.text-link) { justify-content: center; }
-    .hero-proof { gap: 1.1rem; }
-    .split-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }
-    .about-strip > div { grid-template-columns: 1fr; }
-    .post-list a { grid-template-columns: 2rem 1fr auto; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-actions a, .capability-card, .post-list a > i { transition: none; }
-  }
+  .hello-again { display: flex; align-items: end; justify-content: space-between; gap: 2rem; border-top: 1px solid var(--hairline); margin-top: clamp(4.5rem, 9vw, 7rem); padding-top: clamp(3.5rem, 7vw, 5rem); }
+  .hello-again p { margin-top: .5rem; color: var(--muted-text); font-size: .78rem; line-height: 1.75; }
+  .hello-again a { flex: none; color: var(--page-text); font-size: .76rem; font-weight: 650; text-underline-offset: .22rem; }
+  :global(.dark) .roles span { color: #cfc8ff; background: #302b42; }
+  :global(.dark) .current-note { border-color: #5b513b; background: #352f20; }
+  :global(.dark) .current-note strong { color: #f4ead0; }
+  :global(.dark) .current-note > p:not(.note-title), :global(.dark) .note-title { color: #b7aa88; }
+  :global(.dark) .project-card { border-color: #443d5d; background: #292535; }
+  :global(.dark) .project-card.oa-card { border-color: #365147; background: #1f2b26; }
+  :global(.dark) .mini-flow i { color: #ddd7ee; background: rgb(37 33 45 / .85); }
+  :global(.dark) .oa-card .mini-flow i { color: #dcece5; background: rgb(34 47 42 / .9); }
+  :global(.dark) .project-card .project-main > p { color: #aaa1b8; }
+  :global(.dark) .oa-card .project-main > p { color: #9fb8ad; }
+  @media (max-width: 760px) { .home-intro { grid-template-columns: 1fr; gap: 2.5rem; } .current-note { max-width: 24rem; } .focus-grid { grid-template-columns: 1fr; } .focus-grid article { min-height: auto; padding: 1.3rem 0; } .focus-grid article + article { border-top: 1px solid var(--hairline); border-left: 0; padding-left: 0; } .focus-grid h2 { margin-top: .7rem; } .project-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .home-intro { padding-top: 3.5rem; } .mini-flow { overflow: hidden; } .section-head, .hello-again { align-items: flex-start; flex-direction: column; gap: .9rem; } .post-list a { grid-template-columns: 1fr; gap: .5rem; } }
+  @media (prefers-reduced-motion: reduce) { .project-card, .post-list h3 { transition: none; } }
 </style>

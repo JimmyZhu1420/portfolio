@@ -11,8 +11,8 @@ const { active } = Astro.props;
 <header class="site-header">
   <nav class="nav-shell" aria-label="主导航">
     <a href="/" class="brand" aria-label={`${profile.name}，返回首页`}>
-      <span class="brand-mark" aria-hidden="true">J</span>
       <span>{profile.name}</span>
+      <i aria-hidden="true"></i>
     </a>
 
     <div class="desktop-nav">
@@ -119,31 +119,31 @@ const { active } = Astro.props;
     position: sticky;
     z-index: 50;
     top: 0;
-    border-bottom: 1px solid var(--hairline);
-    background: color-mix(in srgb, var(--page-bg) 84%, transparent);
-    backdrop-filter: blur(18px) saturate(150%);
+    background: color-mix(in srgb, var(--page-bg) 90%, transparent);
+    backdrop-filter: blur(14px);
   }
 
   .nav-shell {
     display: flex;
     width: 100%;
     max-width: 72rem;
-    min-height: 4.25rem;
+    min-height: 4.5rem;
     align-items: center;
     justify-content: space-between;
     margin-inline: auto;
     padding-inline: 1.25rem;
   }
 
-  .brand { display: inline-flex; align-items: center; gap: 0.65rem; color: var(--page-text); font-size: 0.94rem; font-weight: 750; letter-spacing: -0.02em; text-decoration: none; }
-  .brand-mark { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; border-radius: 0.55rem; color: #fff; background: #111827; font-family: var(--font-mono); font-size: 0.76rem; box-shadow: 0 7px 18px rgb(15 23 42 / 0.14); }
-  .desktop-nav { display: flex; align-items: center; gap: 1.35rem; }
-  .desktop-nav ul { display: flex; align-items: center; gap: 1.4rem; margin: 0; padding: 0; list-style: none; }
-  .desktop-nav a { color: var(--muted-text); font-size: 0.82rem; font-weight: 560; text-decoration: none; transition: color 160ms ease; }
+  .brand { display: inline-flex; align-items: center; gap: .45rem; color: var(--page-text); font-size: .9rem; font-weight: 720; letter-spacing: -.025em; text-decoration: none; }
+  .brand i { width: .38rem; height: .38rem; border-radius: 50%; background: var(--color-primary-500); transform: translateY(-.28rem); transition: transform 180ms ease; }
+  .brand:hover i { transform: translate(.12rem, -.38rem); }
+  .desktop-nav { display: flex; align-items: center; gap: 1.2rem; }
+  .desktop-nav ul { display: flex; align-items: center; gap: 1.3rem; margin: 0; padding: 0; list-style: none; }
+  .desktop-nav a { color: var(--muted-text); font-size: .78rem; font-weight: 580; text-decoration: none; transition: color 160ms ease; }
   .desktop-nav a:hover, .desktop-nav a.is-active { color: var(--page-text); }
-  .desktop-nav a.is-active { font-weight: 700; }
+  .desktop-nav a.is-active { color: var(--color-primary-600); font-weight: 680; }
   .github-link { border-left: 1px solid var(--hairline); padding-left: 1.35rem; }
-  .theme-toggle, .menu-toggle { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border: 0; border-radius: 0.75rem; color: var(--muted-text); background: transparent; cursor: pointer; }
+  .theme-toggle, .menu-toggle { display: grid; width: 2.65rem; height: 2.65rem; place-items: center; border: 0; border-radius: 999px; color: var(--muted-text); background: transparent; cursor: pointer; }
   .theme-toggle:hover, .menu-toggle:hover { color: var(--page-text); background: var(--surface-soft); }
   .theme-toggle span { font-size: 1.05rem; }
   .mobile-actions { display: none; align-items: center; gap: 0.1rem; }
@@ -159,10 +159,10 @@ const { active } = Astro.props;
   .mobile-menu a { display: flex; min-height: 2.9rem; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--hairline); color: var(--muted-text); font-size: 0.9rem; font-weight: 560; text-decoration: none; }
   .mobile-menu a.is-active { color: var(--color-primary-500); font-weight: 700; }
   .mobile-menu i { font-style: normal; }
-  :global(.dark) .brand-mark { color: #111827; background: #f8fafc; }
-
   @media (max-width: 700px) {
     .desktop-nav { display: none; }
     .mobile-actions { display: flex; }
   }
+
+  @media (prefers-reduced-motion: reduce) { .brand i { transition: none; } }
 </style>

@@ -4,103 +4,124 @@ import Tag from '../components/Tag.astro';
 import { profile } from '../data/profile';
 ---
 
-<BaseLayout title="关于我" description="朱佳明的教育背景、工程能力与 AI Agent 实践" active="/about">
-  <header class="page-hero">
-    <p class="eyebrow">ABOUT / PROFILE</p>
-    <h1>我更关心 Agent 如何可靠完成任务。</h1>
-    <p>{profile.tagline}</p>
+<BaseLayout title="关于" description="关于朱佳明、两个 AI Agent 项目，以及这个网站。" active="/about">
+  <header class="page-head">
+    <p class="eyebrow">ABOUT ME</p>
+    <h1>关于我，也关于<br />这个<em>网站。</em></h1>
+    <p class="side-note" aria-hidden="true">还在学习，也还在继续做东西 ↗</p>
   </header>
 
-  <section class="intro-grid" aria-labelledby="intro-title">
+  <section class="intro section-line" aria-labelledby="hello-title">
+    <p class="section-no">01</p>
     <div class="intro-copy">
-      <h2 id="intro-title">从模型演示，到可以解释的工程系统</h2>
+      <h2 id="hello-title">你好，我是朱佳明。</h2>
       {profile.about.map((paragraph) => <p>{paragraph}</p>)}
-      <a href={`mailto:${profile.email}`}>聊聊项目或实习机会 <span aria-hidden="true">→</span></a>
+      <p>现在住在{profile.location}，正在寻找 <strong>{profile.jobIntention}</strong> 的机会。比起把一串工具写成“熟练掌握”，我更愿意让项目本身说明我做过什么。</p>
     </div>
-    <aside aria-label="个人概况">
-      <dl>
-        <div><dt>当前身份</dt><dd>计算机科学与技术硕士研究生</dd></div>
-        <div><dt>所在地</dt><dd>{profile.location}</dd></div>
-        <div><dt>求职方向</dt><dd>{profile.jobIntention}</dd></div>
-        <div><dt>近期重点</dt><dd>Agent Runtime · 可信 RAG · Evaluation</dd></div>
-      </dl>
+    <aside class="now-card" aria-label="当前状态">
+      <span>NOW</span>
+      <p>东华大学计算机科学与技术硕士在读</p>
+      <p>2025 — 2028</p>
+      <i aria-hidden="true"></i>
+      <small>开放实习机会</small>
     </aside>
   </section>
 
-  <section id="skills" class="section-shell section-rule" aria-labelledby="skills-title">
-    <div class="section-heading">
-      <p class="eyebrow">CAPABILITIES / EVIDENCE</p>
-      <h2 id="skills-title">能力不画百分比，用项目证据说明。</h2>
-      <p>每项能力都可以继续追到案例页、测试结果和公开仓库。</p>
-    </div>
-    <div class="capability-list">
-      {profile.capabilities.map((capability) => (
-        <article>
-          <span>{capability.index}</span>
-          <div>
-            <h3>{capability.title}</h3>
-            <p>{capability.description}</p>
-            <div>{capability.technologies.map((technology) => <Tag label={technology} />)}</div>
-          </div>
-          <a href={capability.href}>{capability.evidence} <span aria-hidden="true">↗</span></a>
-        </article>
-      ))}
+  <section id="skills" class="section-line capabilities" aria-labelledby="skills-title">
+    <p class="section-no">02</p>
+    <div>
+      <h2 id="skills-title">我最近在关心什么</h2>
+      <p class="section-intro">能力不画百分比。下面每一项，都可以继续追到项目案例、实现细节与验证记录。</p>
+      <ol>
+        {profile.capabilities.map((capability) => (
+          <li>
+            <span>{capability.index}</span>
+            <div>
+              <h3>{capability.title}</h3>
+              <p>{capability.description}</p>
+              <div class="tag-list">{capability.technologies.map((technology) => <Tag label={technology} />)}</div>
+            </div>
+            <a href={capability.href}>{capability.evidence} <span aria-hidden="true">↗</span></a>
+          </li>
+        ))}
+      </ol>
     </div>
   </section>
 
-  <section id="focus" class="education-grid section-rule" aria-labelledby="education-title">
+  <section id="focus" class="section-line split-section" aria-labelledby="education-title">
+    <p class="section-no">03</p>
     <div>
-      <p class="eyebrow">EDUCATION</p>
-      <h2 id="education-title">教育经历</h2>
-      <ol>
+      <h2 id="education-title">学习经历</h2>
+      <ol class="timeline">
         {profile.education.map((item) => <li>{item}</li>)}
       </ol>
     </div>
     <div>
-      <p class="eyebrow">CURRENT FOCUS</p>
-      <h2>研究与实践方向</h2>
-      <div class="tag-list">{profile.researchInterests.map((interest) => <Tag label={interest} />)}</div>
-      <p>目前围绕 <a href="/projects/evoagent">EvoAgent</a> 与 <a href="/projects/oa">OA Evidence Agent</a> 持续整理系统实现、评测证据和失败边界。</p>
+      <h2>当前坐标</h2>
+      <div class="interest-list">{profile.researchInterests.map((interest) => <span>{interest}</span>)}</div>
+      <p>这些关键词最后都会落回两个项目：<a href="/projects/evoagent">EvoAgent</a> 和 <a href="/projects/oa">OA Evidence Agent</a>。</p>
+    </div>
+  </section>
+
+  <section class="section-line site-note" aria-labelledby="site-title">
+    <p class="section-no">04</p>
+    <div>
+      <h2 id="site-title">关于这个网站</h2>
+      <p>这是我的项目档案，也是技术笔记本。它用 Astro 构建，没有后台、评论区或复杂的内容系统。项目里的数字只写可核验的结果，能力边界也和功能一起展示。</p>
+      <p>视觉上，我喜欢干净的排版、纸张感和一点不太规整的手写痕迹。希望它读起来更像一个真实的人在讲自己做过的事，而不是一张套了网页外壳的产品宣传页。</p>
+      <div class="site-links">
+        <a href={`mailto:${profile.email}`}>给我写邮件 <span aria-hidden="true">→</span></a>
+        <a href={profile.social.github} target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .page-hero { max-width: 54rem; padding: clamp(4.5rem, 10vw, 8rem) 0 clamp(3.5rem, 7vw, 5.5rem); }
-  .page-hero h1 { max-width: 13ch; margin-top: .8rem; font-size: clamp(2.7rem, 6vw, 5rem); font-weight: 770; letter-spacing: -.06em; line-height: 1.04; }
-  .page-hero > p:last-child { max-width: 46rem; margin-top: 1.35rem; color: var(--muted-text); font-size: 1rem; line-height: 1.9; }
-  .intro-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2.5rem, 8vw, 7rem); border-top: 1px solid var(--hairline); padding: clamp(3.5rem, 7vw, 5.5rem) 0; }
-  .intro-copy h2, .section-heading h2, .education-grid h2 { font-size: clamp(1.65rem, 3.4vw, 2.5rem); font-weight: 740; letter-spacing: -.04em; line-height: 1.18; }
+  .page-head { position: relative; padding: clamp(5rem, 11vw, 9rem) 0 clamp(4rem, 8vw, 6.5rem); }
+  h1 { max-width: 13ch; margin-top: .8rem; font-size: clamp(2.8rem, 6.5vw, 5.6rem); font-weight: 710; letter-spacing: -.065em; line-height: 1.04; }
+  h1 em { color: var(--color-primary-600); font-style: normal; }
+  .side-note { position: absolute; right: 6%; bottom: 27%; color: var(--color-primary-600); font-family: 'KaiTi', 'STKaiti', serif; font-size: .84rem; transform: rotate(-3deg); }
+  .section-line { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 4.5rem); border-top: 1px solid var(--hairline); padding: clamp(4rem, 8vw, 6.5rem) 0; }
+  .section-no { color: var(--color-primary-600); font: 650 .65rem/1.5 var(--font-mono); }
+  h2 { font-size: clamp(1.75rem, 3.5vw, 2.7rem); font-weight: 710; letter-spacing: -.045em; line-height: 1.18; }
+  .intro { grid-template-columns: 3rem minmax(0, 1fr) minmax(15rem, .46fr); }
+  .intro-copy { max-width: 47rem; }
   .intro-copy > p { margin-top: 1.15rem; color: var(--muted-text); font-size: .94rem; line-height: 1.95; }
-  .intro-copy > a { display: inline-flex; gap: .45rem; margin-top: 1.5rem; color: var(--page-text); font-size: .84rem; font-weight: 680; text-underline-offset: .28rem; }
-  aside { align-self: start; border: 1px solid var(--hairline); border-radius: 1.25rem; background: color-mix(in srgb, var(--surface) 88%, transparent); padding: 1.35rem; }
-  dl { margin: 0; }
-  dl div { display: grid; grid-template-columns: 6rem 1fr; gap: 1rem; border-bottom: 1px solid var(--hairline); padding: .9rem 0; }
-  dl div:first-child { padding-top: 0; }
-  dl div:last-child { border: 0; padding-bottom: 0; }
-  dt { color: var(--muted-text); font: 600 .68rem/1.6 var(--font-mono); }
-  dd { margin: 0; font-size: .82rem; font-weight: 620; line-height: 1.6; }
-  .section-heading { max-width: 49rem; }
-  .section-heading h2 { margin-top: .7rem; }
-  .section-heading > p:last-child { margin-top: .9rem; color: var(--muted-text); font-size: .9rem; line-height: 1.8; }
-  .capability-list { margin-top: 2.5rem; border-top: 1px solid var(--hairline); }
-  .capability-list article { display: grid; grid-template-columns: 3rem 1fr auto; gap: 1rem; align-items: start; border-bottom: 1px solid var(--hairline); padding: 1.7rem 0; }
-  .capability-list article > span { color: var(--color-primary-500); font: 650 .68rem/1.6 var(--font-mono); }
-  .capability-list h3 { font-size: 1.05rem; font-weight: 700; }
-  .capability-list p { max-width: 46rem; margin-top: .45rem; color: var(--muted-text); font-size: .84rem; line-height: 1.75; }
-  .capability-list article div div { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .85rem; }
-  .capability-list a { color: var(--page-text); font-size: .75rem; font-weight: 650; text-underline-offset: .25rem; }
-  .education-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem, 8vw, 7rem); padding: clamp(4rem, 8vw, 6.5rem) 0 1rem; }
-  .education-grid h2 { margin-top: .65rem; }
-  .education-grid ol { margin: 1.6rem 0 0; padding: 0; list-style: none; }
-  .education-grid li { position: relative; border-left: 1px solid var(--hairline); padding: 0 0 1.35rem 1.25rem; color: var(--muted-text); font-size: .88rem; line-height: 1.75; }
-  .education-grid li::before { position: absolute; top: .45rem; left: -.25rem; width: .45rem; height: .45rem; border-radius: 50%; background: var(--color-primary-500); content: ''; }
-  .tag-list { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.6rem; }
-  .education-grid > div:last-child > p:last-child { margin-top: 1.25rem; color: var(--muted-text); font-size: .88rem; line-height: 1.8; }
-  .education-grid a { color: var(--page-text); font-weight: 650; text-underline-offset: .2rem; }
-  @media (max-width: 760px) {
-    .intro-grid, .education-grid { grid-template-columns: 1fr; }
-    .capability-list article { grid-template-columns: 2rem 1fr; }
-    .capability-list article > a { grid-column: 2; }
-  }
+  .intro-copy strong { color: var(--page-text); font-weight: 680; }
+  .now-card { position: relative; align-self: start; border: 1px solid #d7d0bd; border-radius: .4rem 1rem 1rem .9rem; background: #fff9df; padding: 1.25rem; box-shadow: 0 1rem 2.5rem rgb(64 54 35 / .08); transform: rotate(1.5deg); }
+  .now-card::before { position: absolute; top: -.5rem; left: 35%; width: 3.2rem; height: .9rem; background: rgb(255 255 255 / .62); content: ''; transform: rotate(-4deg); }
+  .now-card > span { color: #807762; font: 650 .6rem/1 var(--font-mono); }
+  .now-card p { margin-top: .9rem; color: #3f3a31; font-size: .82rem; font-weight: 650; line-height: 1.7; }
+  .now-card p + p { margin-top: .15rem; color: #817968; font: 550 .62rem/1.5 var(--font-mono); }
+  .now-card i { display: block; border-top: 1px solid #dfd5b8; margin: 1rem 0; }
+  .now-card small { display: inline-flex; align-items: center; gap: .45rem; color: #537063; font-size: .64rem; font-weight: 620; }
+  .now-card small::before { width: .42rem; height: .42rem; border-radius: 50%; background: #2f9b76; content: ''; }
+  .capabilities > div { min-width: 0; }
+  .section-intro { max-width: 42rem; margin-top: .9rem; color: var(--muted-text); font-size: .86rem; line-height: 1.85; }
+  .capabilities ol { margin: 2.4rem 0 0; padding: 0; list-style: none; }
+  .capabilities li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; gap: 1rem; border-top: 1px solid var(--hairline); padding: 1.5rem 0; }
+  .capabilities li:last-child { border-bottom: 1px solid var(--hairline); }
+  .capabilities li > span { color: var(--color-primary-600); font: 650 .64rem/1.6 var(--font-mono); }
+  .capabilities h3 { font-size: 1rem; font-weight: 690; }
+  .capabilities li p { max-width: 48rem; margin-top: .45rem; color: var(--muted-text); font-size: .82rem; line-height: 1.78; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .8rem; }
+  .capabilities li > a { color: var(--page-text); font-size: .72rem; font-weight: 650; text-underline-offset: .22rem; }
+  .split-section { grid-template-columns: 3rem 1fr 1fr; }
+  .timeline { margin: 1.6rem 0 0; padding: 0; list-style: none; }
+  .timeline li { position: relative; border-left: 1px solid var(--hairline); padding: 0 0 1.4rem 1.2rem; color: var(--muted-text); font-size: .82rem; line-height: 1.75; }
+  .timeline li::before { position: absolute; top: .4rem; left: -.22rem; width: .42rem; height: .42rem; border-radius: 50%; background: var(--color-primary-500); content: ''; }
+  .interest-list { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.6rem; }
+  .interest-list span { border: 1px solid var(--hairline); border-radius: 999px; background: var(--surface); padding: .4rem .65rem; font-size: .68rem; }
+  .split-section > div:last-child > p { margin-top: 1.2rem; color: var(--muted-text); font-size: .82rem; line-height: 1.8; }
+  .split-section a, .site-note a { color: var(--page-text); font-weight: 650; text-underline-offset: .22rem; }
+  .site-note > div { max-width: 49rem; }
+  .site-note > div > p { margin-top: 1rem; color: var(--muted-text); font-size: .9rem; line-height: 1.95; }
+  .site-links { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 1.5rem; }
+  .site-links a { font-size: .78rem; }
+  :global(.dark) .now-card { border-color: #5b513b; background: #352f20; }
+  :global(.dark) .now-card p { color: #f4ead0; }
+  :global(.dark) .now-card p + p, :global(.dark) .now-card > span { color: #b7aa88; }
+  @media (max-width: 800px) { .intro, .split-section { grid-template-columns: 2rem 1fr; } .intro > .now-card, .split-section > div:last-child { grid-column: 2; } .side-note { display: none; } }
+  @media (max-width: 580px) { .section-line { grid-template-columns: 1fr; gap: .9rem; } .intro, .split-section { grid-template-columns: 1fr; } .intro > .now-card, .split-section > div:last-child { grid-column: 1; } .capabilities li { grid-template-columns: 2rem 1fr; } .capabilities li > a { grid-column: 2; } }
 </style>

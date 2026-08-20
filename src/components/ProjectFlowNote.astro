@@ -1,0 +1,57 @@
+---
+import type { Project } from '../data/profile';
+
+interface Props { project: Project; }
+const { project } = Astro.props;
+const isEvo = project.slug === 'evoagent';
+---
+
+<figure class:list={['flow-note', !isEvo && 'oa-flow']}>
+  <div class="flow-label">
+    <span>HOW IT MOVES</span>
+    <small>architecture walkthrough</small>
+  </div>
+  <ol aria-label={`${project.name} 执行流程：${project.flow.join('，')}`}>
+    {project.flow.map((step, index) => (
+      <li style={`--order: ${index}`}>
+        <i>{String(index + 1).padStart(2, '0')}</i>
+        <strong>{step}</strong>
+      </li>
+    ))}
+  </ol>
+  <figcaption>
+    <span>{isEvo ? '有界执行 · checkpoint 可恢复 · 证据复核' : '顺序执行工具 · 降级状态可见 · 最多修订一次'}</span>
+    <em aria-hidden="true">{isEvo ? '先验证，再裁决 ↗' : '研究观察，不是诊断 ↗'}</em>
+  </figcaption>
+</figure>
+
+<style>
+  .flow-note { --flow-accent: #6558d9; position: relative; overflow: hidden; border: 1px solid #d9d3eb; border-radius: 1.25rem; background: #eeeaf9; padding: clamp(1.2rem, 3vw, 2rem); }
+  .flow-note::before { position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, rgb(75 62 168 / .12) 1px, transparent 0); background-size: 1.35rem 1.35rem; content: ''; mask-image: linear-gradient(to bottom right, black, transparent 75%); }
+  .flow-note.oa-flow { --flow-accent: #28775a; border-color: #cddfd8; background: #e8f2ed; }
+  .oa-flow::before { background-image: radial-gradient(circle at 1px 1px, rgb(47 121 93 / .12) 1px, transparent 0); }
+  .flow-label, ol, figcaption { position: relative; z-index: 1; }
+  .flow-label { display: flex; justify-content: space-between; gap: 1rem; color: #6a6284; font: 600 .59rem/1 var(--font-mono); letter-spacing: .05em; }
+  .oa-flow .flow-label { color: #527365; }
+  .flow-label small { font: inherit; font-weight: 500; }
+  ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: clamp(2.8rem, 6vw, 4.5rem) 0 0; padding: 0; list-style: none; }
+  li { position: relative; min-width: 0; border-top: 1px solid rgb(87 73 161 / .24); padding: 1rem .7rem 0 0; }
+  .oa-flow li { border-color: rgb(41 115 88 / .24); }
+  li::before { position: absolute; top: -.28rem; left: 0; width: .54rem; height: .54rem; border: 2px solid var(--flow-accent); border-radius: 50%; background: #f5f1fc; content: ''; animation: flow-step 5s ease-in-out infinite; animation-delay: calc(var(--order) * .55s); }
+  .oa-flow li::before { background: #eef7f2; }
+  li i { display: block; color: var(--flow-accent); font: 650 .57rem/1 var(--font-mono); font-style: normal; }
+  li strong { display: block; margin-top: .5rem; color: #454052; font-size: .7rem; font-weight: 650; line-height: 1.45; }
+  .oa-flow li strong { color: #3f574c; }
+  figcaption { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-top: clamp(2.5rem, 5vw, 4rem); color: #6a6284; font-size: .65rem; line-height: 1.6; }
+  .oa-flow figcaption { color: #527365; }
+  figcaption em { flex: none; color: var(--flow-accent); font-family: 'KaiTi', 'STKaiti', serif; font-size: .78rem; font-style: normal; transform: rotate(-2deg); }
+  :global(.dark) .flow-note { border-color: #443d5d; background: #292535; }
+  :global(.dark) .flow-note.oa-flow { border-color: #365147; background: #1f2b26; }
+  :global(.dark) li strong { color: #e3deed; }
+  :global(.dark) .oa-flow li strong { color: #dbe9e2; }
+  :global(.dark) li::before { background: #292535; }
+  :global(.dark) .oa-flow li::before { background: #1f2b26; }
+  @keyframes flow-step { 0%, 18%, 100% { box-shadow: 0 0 0 0 transparent; } 28%, 42% { box-shadow: 0 0 0 .35rem color-mix(in srgb, var(--flow-accent) 15%, transparent); } }
+  @media (max-width: 620px) { ol { grid-template-columns: 1fr; margin-top: 2rem; } li { border-top: 0; border-left: 1px solid rgb(87 73 161 / .24); padding: 0 0 1.2rem 1rem; } li::before { top: .05rem; left: -.28rem; } figcaption { align-items: flex-start; flex-direction: column; margin-top: 1rem; } }
+  @media (prefers-reduced-motion: reduce) { li::before { animation: none; } }
+</style>

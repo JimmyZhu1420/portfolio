@@ -17,7 +17,7 @@ const { Content, headings } = await render(post);
 const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} active="/blog" article>
+<BaseLayout title={post.data.title} description={post.data.description} active="/blog" article socialImage={null}>
   <article class="article-shell">
     <a class="back-link" href="/blog"><span aria-hidden="true">←</span> 返回全部文章</a>
     <header>

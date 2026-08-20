@@ -61,7 +61,6 @@ export interface Profile {
   jobIntention: string;
   about: string[];
   social: { github: string; linkedin: string; wechat: string };
-  resumeUrl: string;
   capabilities: Capability[];
   projects: Project[];
   publications: Publication[];
@@ -88,7 +87,6 @@ export const profile: Profile = {
     linkedin: '',
     wechat: 'Z1030835347',
   },
-  resumeUrl: '/resume.pdf',
   capabilities: [
     {
       index: '01',
@@ -243,8 +241,8 @@ export const profile: Profile = {
 export const navItems = [
   { label: '首页', href: '/' },
   { label: '项目', href: '/projects' },
-  { label: '关于', href: '/about' },
   { label: '文章', href: '/blog' },
+  { label: '关于', href: '/about' },
 ] as const;
 
 export function getProject(slug: string): Project | undefined {

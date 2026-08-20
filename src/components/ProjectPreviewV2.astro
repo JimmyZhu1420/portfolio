@@ -1,0 +1,142 @@
+---
+import type { Project } from '../data/profile';
+
+interface Props { project: Project; index?: number; }
+const { project, index = 1 } = Astro.props;
+const isEvo = project.slug === 'evoagent';
+---
+
+<article class="case-preview">
+  <a class:list={['case-canvas', !isEvo && 'oa-canvas']} href={`/projects/${project.slug}`} aria-label={`查看 ${project.name} 项目详情`}>
+    <div class="canvas-label"><span>selected work · {String(index).padStart(2, '0')}</span><span>architecture walkthrough</span></div>
+    {isEvo ? (
+      <>
+        <div class="diff-paper">
+          <div><span>pull_request.diff</span><i>reviewing</i></div>
+          <code><em>+</em> validate(payload)</code>
+          <code><em>+</em> collect_evidence()</code>
+          <code><em>+</em> verify_finding()</code>
+        </div>
+        <ol class="review-path" aria-hidden="true">
+          <li><i>1</i><span>Planner</span></li>
+          <li><i>2</i><span>Specialists</span></li>
+          <li><i>3</i><span>Evidence</span></li>
+          <li><i>4</i><span>Verifier</span></li>
+        </ol>
+        <div class="review-note">
+          <span>review note</span>
+          <strong>结论之前，先把证据接回来。</strong>
+          <small>bounded · resumable · auditable</small>
+        </div>
+      </>
+    ) : (
+      <>
+        <div class="question-paper">
+          <span>research question</span>
+          <strong>怎样让回答保留来源、降级状态与边界？</strong>
+          <small>不是诊断 · 不替代专业医疗建议</small>
+        </div>
+        <ol class="evidence-path" aria-hidden="true">
+          <li><i>1</i><span>Plan</span><em>任务规划</em></li>
+          <li><i>2</i><span>Retrieve</span><em>指南证据</em></li>
+          <li><i>3</i><span>Reflect</span><em>一次修订</em></li>
+        </ol>
+        <div class="source-note">
+          <span>evidence pack</span>
+          <p><b>NICE</b><i>source linked</i></p>
+          <p><b>AAOS</b><i>source linked</i></p>
+        </div>
+        <div class="boundary-note">research only ↗</div>
+      </>
+    )}
+  </a>
+
+  <div class="case-copy">
+    <div class="case-title">
+      <div>
+        <p>{project.eyebrow}</p>
+        <h3>{project.name}</h3>
+      </div>
+      <span>{project.year}</span>
+    </div>
+    <p class="case-tagline">{project.title}</p>
+    <p class="case-description">{project.description}</p>
+    <ul class="evidence-row" aria-label={`${project.name} 验证证据`}>
+      {project.metrics.map((metric) => <li><strong>{metric.value}</strong><span>{metric.label}</span></li>)}
+    </ul>
+    <div class="case-links">
+      <a href={`/projects/${project.slug}`}>阅读项目案例 <span aria-hidden="true">→</span></a>
+      {project.repositoryPublic && <a href={project.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>}
+    </div>
+  </div>
+</article>
+
+<style>
+  .case-preview { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(18rem, .75fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  .case-canvas { position: relative; display: block; min-height: 31rem; overflow: hidden; border: 1px solid #d9d3eb; border-radius: 1.5rem; color: inherit; background: #eeeaf9; text-decoration: none; transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms ease; }
+  .case-canvas::before { position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, rgb(75 62 168 / .13) 1px, transparent 0); background-size: 1.35rem 1.35rem; content: ''; mask-image: linear-gradient(to bottom right, black, transparent 78%); }
+  .oa-canvas { border-color: #cddfd8; background: #e8f2ed; }
+  .oa-canvas::before { background-image: radial-gradient(circle at 1px 1px, rgb(47 121 93 / .13) 1px, transparent 0); }
+  .case-canvas:hover { transform: translateY(-.25rem); box-shadow: 0 1.5rem 3.5rem rgb(67 53 145 / .13); }
+  .canvas-label { position: absolute; z-index: 2; inset: 1.1rem 1.2rem auto; display: flex; justify-content: space-between; gap: 1rem; color: #6a6284; font: 600 .61rem/1 var(--font-mono); letter-spacing: .05em; }
+  .diff-paper { position: absolute; z-index: 2; top: 5rem; left: clamp(1.2rem, 5vw, 3.2rem); width: min(61%, 21rem); min-height: 14rem; border-radius: 1rem; color: #f6f3ff; background: #26222e; padding: 1.15rem; box-shadow: 0 1.2rem 2.5rem rgb(38 28 61 / .2); transform: rotate(-2deg); }
+  .diff-paper > div { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgb(255 255 255 / .12); margin-bottom: 1.15rem; padding-bottom: .75rem; font: 550 .58rem/1 var(--font-mono); }
+  .diff-paper i { color: #b9f3d5; font-style: normal; }
+  .diff-paper code { display: block; margin-top: .85rem; color: #e7e0f7; font: 500 .7rem/1.5 var(--font-mono); }
+  .diff-paper em { color: #8fe2bd; font-style: normal; }
+  .review-path { position: absolute; z-index: 3; top: 4.4rem; right: clamp(1rem, 4vw, 2.4rem); display: grid; gap: .55rem; width: min(38%, 11.5rem); margin: 0; padding: 0; list-style: none; }
+  .review-path li { display: flex; align-items: center; gap: .55rem; border: 1px solid rgb(90 75 170 / .18); border-radius: .7rem; color: #454052; background: rgb(255 253 248 / .88); padding: .55rem .65rem; font: 600 .6rem/1 var(--font-mono); backdrop-filter: blur(8px); transition: transform 180ms ease, border-color 180ms ease; }
+  .case-canvas:hover .review-path li:nth-child(2) { transform: translateX(-.3rem); border-color: #7b6cdb; }
+  .review-path i { display: grid; width: 1.2rem; height: 1.2rem; place-items: center; border-radius: 50%; color: #6558d9; background: #eeebff; font-size: .5rem; font-style: normal; }
+  .review-note { position: absolute; z-index: 4; right: clamp(1.3rem, 5vw, 3.2rem); bottom: 2.6rem; width: min(56%, 18rem); border: 1px solid #d7d0bd; border-radius: .4rem 1rem 1rem .9rem; background: #fff9df; padding: 1.05rem 1.15rem; box-shadow: 0 .8rem 2rem rgb(65 53 29 / .12); transform: rotate(2.5deg); }
+  .review-note::before { position: absolute; top: -.45rem; left: 1.5rem; width: 3rem; height: .85rem; background: rgb(255 255 255 / .58); content: ''; transform: rotate(-4deg); }
+  .review-note span { color: #827963; font: 600 .58rem/1 var(--font-mono); }
+  .review-note strong { display: block; margin-top: .55rem; color: #413c32; font-size: .82rem; line-height: 1.6; }
+  .review-note small { display: block; margin-top: .65rem; color: #827963; font: 500 .56rem/1 var(--font-mono); }
+  .question-paper { position: absolute; z-index: 2; top: 4.8rem; left: clamp(1.2rem, 5vw, 3.2rem); width: min(62%, 21rem); border: 1px solid #d7d0bd; border-radius: .45rem 1rem 1rem .9rem; background: #fff9df; padding: 1.35rem; box-shadow: 0 1rem 2.4rem rgb(58 74 65 / .12); transform: rotate(-2deg); }
+  .question-paper::before { position: absolute; top: -.5rem; right: 2.2rem; width: 3.2rem; height: .9rem; background: rgb(255 255 255 / .62); content: ''; transform: rotate(4deg); }
+  .question-paper span, .source-note > span { color: #65796f; font: 600 .58rem/1 var(--font-mono); }
+  .question-paper strong { display: block; margin-top: .7rem; color: #34443d; font-size: .9rem; line-height: 1.65; }
+  .question-paper small { display: block; margin-top: .85rem; color: #71827a; font-size: .63rem; }
+  .evidence-path { position: absolute; z-index: 2; top: 5.1rem; right: clamp(1rem, 4vw, 2.4rem); display: grid; gap: .55rem; width: min(34%, 10.5rem); margin: 0; padding: 0; list-style: none; }
+  .evidence-path li { display: grid; grid-template-columns: 1.3rem 1fr; gap: .2rem .5rem; border: 1px solid rgb(50 112 87 / .18); border-radius: .8rem; background: rgb(255 253 248 / .86); padding: .58rem; backdrop-filter: blur(8px); }
+  .evidence-path i { grid-row: span 2; display: grid; width: 1.25rem; height: 1.25rem; place-items: center; border-radius: 50%; color: #257a5d; background: #dff2e9; font: 600 .5rem/1 var(--font-mono); font-style: normal; }
+  .evidence-path span { color: #33463e; font: 650 .61rem/1 var(--font-mono); }
+  .evidence-path em { color: #71827a; font-size: .55rem; font-style: normal; }
+  .source-note { position: absolute; z-index: 3; right: clamp(1.3rem, 5vw, 3.2rem); bottom: 2.5rem; width: min(55%, 18rem); border: 1px solid #c8d9d2; border-radius: 1rem; background: #fffdf8; padding: 1rem; box-shadow: 0 .9rem 2rem rgb(50 90 73 / .1); transform: rotate(2deg); }
+  .source-note p { display: flex; align-items: center; justify-content: space-between; gap: .7rem; border-top: 1px solid #dde8e3; margin: .65rem 0 0; padding-top: .65rem; }
+  .source-note b { color: #31473d; font: 700 .63rem/1 var(--font-mono); }
+  .source-note i { color: #527365; font: 500 .55rem/1 var(--font-mono); font-style: normal; }
+  .boundary-note { position: absolute; z-index: 4; bottom: 1.55rem; left: 1.5rem; color: #28775a; font-family: 'KaiTi', 'STKaiti', serif; font-size: .82rem; transform: rotate(-4deg); }
+  .case-copy { min-width: 0; }
+  .case-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+  .case-title p { color: var(--color-primary-600); font: 600 .62rem/1.4 var(--font-mono); letter-spacing: .06em; }
+  .case-title h3 { margin-top: .45rem; font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 720; letter-spacing: -.055em; line-height: 1; }
+  .case-title > span { color: var(--muted-text); font: 600 .65rem/1 var(--font-mono); }
+  .case-tagline { margin-top: 1.25rem; color: var(--page-text); font-size: 1rem; font-weight: 650; line-height: 1.7; }
+  .case-description { margin-top: .7rem; color: var(--muted-text); font-size: .86rem; line-height: 1.85; }
+  .evidence-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin: 1.5rem 0 0; padding: 1.15rem 0 0; border-top: 1px solid var(--hairline); list-style: none; }
+  .evidence-row li { display: flex; min-width: 0; flex-direction: column; gap: .25rem; }
+  .evidence-row strong { font: 680 .76rem/1.3 var(--font-mono); }
+  .evidence-row span { color: var(--muted-text); font-size: .61rem; line-height: 1.4; }
+  .case-links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
+  .case-links a { color: var(--page-text); font-size: .78rem; font-weight: 680; text-underline-offset: .25rem; }
+  .case-links a:first-child { display: inline-flex; gap: .35rem; text-decoration: none; border-bottom: 1px solid currentColor; }
+  :global(.dark) .case-canvas { border-color: #443d5d; background: #292535; }
+  :global(.dark) .oa-canvas { border-color: #365147; background: #1f2b26; }
+  :global(.dark) .canvas-label { color: #aaa1ca; }
+  :global(.dark) .review-path li { border-color: #494155; color: #ede9f7; background: rgb(37 33 45 / .88); }
+  :global(.dark) .review-note { border-color: #5b513b; background: #352f20; }
+  :global(.dark) .review-note strong { color: #f4ead0; }
+  :global(.dark) .review-note span, :global(.dark) .review-note small { color: #b7aa88; }
+  :global(.dark) .question-paper { border-color: #5b513b; background: #352f20; }
+  :global(.dark) .question-paper strong { color: #f4ead0; }
+  :global(.dark) .question-paper span, :global(.dark) .question-paper small { color: #b7aa88; }
+  :global(.dark) .evidence-path li, :global(.dark) .source-note { border-color: #40584e; background: rgb(34 47 42 / .9); }
+  :global(.dark) .evidence-path span, :global(.dark) .source-note b { color: #e5f0eb; }
+  :global(.dark) .evidence-path em, :global(.dark) .source-note i, :global(.dark) .source-note > span { color: #9fb8ad; }
+  :global(.dark) .source-note p { border-color: #40584e; }
+  @media (max-width: 860px) { .case-preview { grid-template-columns: 1fr; } .case-canvas { min-height: 28rem; } .case-copy { max-width: 42rem; } }
+  @media (max-width: 520px) { .case-canvas { min-height: 24rem; border-radius: 1.1rem; } .canvas-label span:last-child { display: none; } .diff-paper { top: 4rem; width: 72%; min-height: 11.5rem; } .review-path { top: 3.5rem; right: .7rem; width: 38%; } .review-path li { padding: .42rem; } .review-path li span { overflow: hidden; text-overflow: ellipsis; } .review-note { right: 1rem; bottom: 1.7rem; width: 68%; } }
+  @media (prefers-reduced-motion: reduce) { .case-canvas, .review-path li { transition: none; } }
+</style>

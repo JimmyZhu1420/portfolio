@@ -9,90 +9,218 @@ const articleHref = project.slug === 'evoagent' ? '/blog/evoagent-runtime' : '/b
 ---
 
 <BaseLayout title={project.name} description={project.tagline} active="/projects" socialImage={null}>
-  <div class="site-wrapper detail-shell">
-    <article>
-      <a class="back-link" href="/projects">← 返回项目列表</a>
-      <header class="project-header">
-        <h1>{project.name}</h1>
-        <p>{project.title}</p>
-        <div class="project-actions">
-          {project.repositoryPublic ? <a class="primary" href={project.github} target="_blank" rel="noopener noreferrer">查看 GitHub <span aria-hidden="true">↗</span></a> : <span>仓库待公开</span>}
-          <a href={articleHref}>阅读项目文章 <span aria-hidden="true">→</span></a>
+  <div class:list={['detail-page', project.slug]}>
+    <header class="detail-hero">
+      <div class="hero-halo" aria-hidden="true"></div>
+      <div class="shell">
+        <a class="back-link" href="/projects" data-reveal><span aria-hidden="true">‹</span> 全部项目</a>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="hero-label" data-reveal>{project.eyebrow}</p>
+            <h1 data-reveal>{project.name}</h1>
+            <h2 data-reveal>{project.title}</h2>
+            <div class="project-actions" data-reveal>
+              {project.repositoryPublic ? <a class="primary-action" href={project.github} target="_blank" rel="noopener noreferrer">查看 GitHub <span aria-hidden="true">↗</span></a> : <span class="private-action">仓库待公开</span>}
+              <a class="text-action" href={articleHref}>阅读项目文章 <span aria-hidden="true">›</span></a>
+            </div>
+          </div>
+          <div class="hero-object" aria-hidden="true" data-reveal>
+            <div class="object-ring ring-one"></div>
+            <div class="object-ring ring-two"></div>
+            <div class="object-core"><strong>{project.slug === 'evoagent' ? 'EVO' : 'OA'}</strong><span>{project.slug === 'evoagent' ? 'RUNTIME' : 'EVIDENCE'}</span></div>
+            <i class="object-node node-one"></i><i class="object-node node-two"></i><i class="object-node node-three"></i>
+          </div>
         </div>
-      </header>
 
-      <section class="overview">
-        <p>{project.description}</p>
-        <div class="tags">{project.tags.map((tag) => <span>{tag}</span>)}</div>
-        <dl>{project.metrics.map((metric) => <div><dd>{metric.value}</dd><dt>{metric.label}</dt></div>)}</dl>
-      </section>
+        <dl class="hero-metrics" data-stagger>
+          {project.metrics.map((metric) => <div data-reveal><dd>{metric.value}</dd><dt>{metric.label}</dt></div>)}
+        </dl>
+      </div>
+    </header>
 
-      <section class="content-section">
-        <h2>为什么做这个项目</h2>
-        {project.challenge.map((paragraph) => <p>{paragraph}</p>)}
-      </section>
-
-      <section class="content-section">
-        <h2>我实现了什么</h2>
-        <div class="build-grid">
-          {project.build.map((item, index) => <section class={`shape-${(index % 3) + 1}`}><span>0{index + 1}</span><h3>{item.title}</h3><p>{item.description}</p></section>)}
+    <article class="detail-content">
+      <section class="overview-section shell">
+        <div class="section-label" data-reveal><span>01</span><p>OVERVIEW</p></div>
+        <div class="overview-copy">
+          <h2 data-reveal>把能力，放进<br />可验证的边界里。</h2>
+          <p class="lead" data-reveal>{project.description}</p>
+          <div class="tags" data-stagger>{project.tags.map((tag) => <span data-reveal>{tag}</span>)}</div>
         </div>
       </section>
 
-      <section class="content-section">
-        <h2>一次任务如何流转</h2>
-        <ol class="flow">{project.flow.map((step, index) => <li><span>0{index + 1}</span><strong>{step}</strong></li>)}</ol>
+      <section class="challenge-section">
+        <div class="shell split-section">
+          <div class="section-label" data-reveal><span>02</span><p>THE PROBLEM</p></div>
+          <div>
+            <h2 data-reveal>为什么做它。</h2>
+            <div class="challenge-copy" data-stagger>{project.challenge.map((paragraph) => <p data-reveal>{paragraph}</p>)}</div>
+          </div>
+        </div>
       </section>
 
-      <section class="content-section evidence-section">
-        <div><h2>如何验证它</h2><ul>{project.proof.map((item) => <li>{item}</li>)}</ul></div>
-        <aside><h2>能力边界</h2><ul>{project.boundaries.map((item) => <li>{item}</li>)}</ul></aside>
+      <section class="build-section shell">
+        <div class="section-label" data-reveal><span>03</span><p>SYSTEM DESIGN</p></div>
+        <div class="build-content">
+          <h2 data-reveal>我实现了什么。</h2>
+          <div class="build-grid" data-stagger>
+            {project.build.map((item, index) => (
+              <section data-reveal>
+                <span>0{index + 1}</span>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </section>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="flow-section">
+        <div class="shell">
+          <div class="section-label" data-reveal><span>04</span><p>EXECUTION FLOW</p></div>
+          <h2 data-reveal>一次任务，如何流转。</h2>
+          <ol class="flow" data-stagger>
+            {project.flow.map((step, index) => <li data-reveal><span>0{index + 1}</span><strong>{step}</strong></li>)}
+          </ol>
+        </div>
+      </section>
+
+      <section class="proof-section shell">
+        <div class="section-label" data-reveal><span>05</span><p>PROOF & BOUNDARIES</p></div>
+        <div class="proof-grid">
+          <div class="proof-card" data-reveal>
+            <p class="card-label">工程证据</p>
+            <h2>如何验证它。</h2>
+            <ul>{project.proof.map((item) => <li><span aria-hidden="true">✓</span>{item}</li>)}</ul>
+          </div>
+          <aside class="boundary-card" data-reveal>
+            <p class="card-label">Capability boundaries</p>
+            <h2>能力边界。</h2>
+            <ul>{project.boundaries.map((item) => <li><span aria-hidden="true">—</span>{item}</li>)}</ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="next-section">
+        <div class="shell" data-reveal>
+          <p>NEXT STEP</p>
+          <h2>继续了解<br />背后的设计取舍。</h2>
+          <a href={articleHref}>阅读项目文章 <span aria-hidden="true">›</span></a>
+        </div>
       </section>
     </article>
   </div>
 </BaseLayout>
 
 <style>
-  .detail-shell { max-width: 64rem; padding-block: 2.5rem 7rem; }
-  .back-link { color: var(--muted-text); font-size: .78rem; text-decoration: none; }
-  .back-link:hover { color: var(--primary); }
-  .project-header { padding: 2.5rem 0 2rem; }
-  h1 { margin: 0; font-family: var(--font-brand); font-size: clamp(2.3rem, 5vw, 3.4rem); font-weight: 680; letter-spacing: -.025em; }
-  .project-header > p { max-width: 44rem; margin-top: .65rem; color: var(--muted-text); font-size: 1.08rem; line-height: 1.65; }
-  .project-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.4rem; }
-  .project-actions a, .project-actions > span { border-radius: 999px; color: var(--primary); padding: .65rem .9rem; font-size: .76rem; font-weight: 650; }
-  .project-actions a { text-decoration: none; }
-  .project-actions a.primary { color: var(--primary-contrast); background: var(--primary); }
-  .project-actions > span { border: 1px solid var(--hairline); color: var(--muted-text); }
-  .overview { border: 1px solid var(--hairline); border-radius: var(--radius-2xl); background: color-mix(in srgb, var(--surface) 62%, transparent); padding: clamp(1.5rem, 4vw, 2.5rem); box-shadow: var(--shadow-sm); }
-  .overview > p { color: var(--muted-text); line-height: 1.8; }
-  .tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.2rem; }
-  .tags span { border-radius: 999px; color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); padding: .34rem .6rem; font-size: .68rem; }
-  dl { display: grid; grid-template-columns: repeat(3, 1fr); margin: 2rem 0 0; border-top: 1px solid var(--hairline); padding-top: 1.5rem; }
-  dl div + div { border-left: 1px solid var(--hairline); padding-left: 1.5rem; }
-  dd { margin: 0; color: var(--primary); font-size: 1.2rem; font-weight: 700; }
-  dt { margin-top: .3rem; color: var(--muted-text); font-size: .7rem; }
-  .content-section { padding-top: 4rem; }
-  .content-section > h2, .evidence-section h2 { margin: 0 0 1rem; font-family: var(--font-brand); font-size: 1.8rem; font-weight: 650; }
-  .content-section > p { max-width: 50rem; margin: .8rem 0; line-height: 1.85; }
-  .build-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-  .build-grid section { border: 1px solid var(--hairline); background: var(--surface-soft); padding: 1.5rem; }
-  .shape-1 { border-radius: var(--radius-3xl) var(--radius-lg) var(--radius-2xl) var(--radius-xl); }
-  .shape-2 { border-radius: var(--radius-xl) var(--radius-2xl) var(--radius-lg) var(--radius-3xl); }
-  .shape-3 { border-radius: var(--radius-lg) var(--radius-3xl) var(--radius-xl) var(--radius-2xl); }
-  .build-grid span { color: var(--primary); font-size: .68rem; font-weight: 650; }
-  .build-grid h3 { margin-top: 1.2rem; font-family: var(--font-brand); font-size: 1.22rem; font-weight: 650; }
-  .build-grid p { margin-top: .55rem; color: var(--muted-text); font-size: .86rem; line-height: 1.75; }
-  .flow { display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 0; list-style: none; }
-  .flow li { position: relative; border-top: 2px solid color-mix(in srgb, var(--primary) 30%, var(--hairline)); padding: 1rem .5rem 0 0; }
-  .flow li::before { position: absolute; top: -.34rem; left: 0; width: .58rem; height: .58rem; border-radius: 50%; background: var(--primary); content: ''; }
-  .flow span { display: block; color: var(--primary); font-size: .62rem; }
-  .flow strong { display: block; margin-top: .35rem; font-size: .72rem; font-weight: 650; }
-  .evidence-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-  .evidence-section > div, .evidence-section aside { border: 1px solid var(--hairline); border-radius: var(--radius-2xl); padding: 1.5rem; }
-  .evidence-section aside { background: var(--surface-soft); }
-  .evidence-section ul { display: grid; gap: .65rem; margin: 0; padding-left: 1.2rem; }
-  .evidence-section li { color: var(--muted-text); font-size: .82rem; line-height: 1.75; }
-  .evidence-section li::marker { color: var(--primary); }
-  @media (max-width: 700px) { .detail-shell { padding-top: 1.5rem; } .build-grid, .evidence-section { grid-template-columns: 1fr; } dl { grid-template-columns: 1fr; } dl div + div { border-top: 1px solid var(--hairline); border-left: 0; margin-top: 1rem; padding: 1rem 0 0; } .flow { grid-template-columns: 1fr; } .flow li { border-top: 0; border-left: 2px solid color-mix(in srgb, var(--primary) 30%, var(--hairline)); padding: 0 0 1.2rem 1rem; } .flow li::before { top: .15rem; left: -.36rem; } }
+  .detail-page { background: #fff; }
+  .detail-hero { position: relative; overflow: hidden; color: #f5f5f7; background: #000; padding: 2rem 0 4rem; isolation: isolate; }
+  .detail-page.oa .detail-hero { color: #1d1d1f; background: linear-gradient(150deg, #f8fbff, #eaf3ff 52%, #f0eaff); }
+  .hero-halo { position: absolute; z-index: -1; top: 6%; right: -12%; width: 54rem; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgb(32 125 255 / .28), rgb(123 72 255 / .1) 43%, transparent 68%); filter: blur(25px); }
+  .oa .hero-halo { background: radial-gradient(circle, rgb(255 255 255 / .9), rgb(57 141 255 / .18) 34%, rgb(154 98 255 / .12) 52%, transparent 70%); }
+  .back-link { display: inline-flex; align-items: center; gap: .35rem; color: #86868b; font-size: .76rem; text-decoration: none; }
+  .back-link span { font-size: 1.25rem; transition: transform .3s var(--ease-premium); }
+  .back-link:hover span { transform: translateX(-4px); }
+  .hero-grid { display: grid; min-height: 33rem; grid-template-columns: 1fr .8fr; align-items: center; gap: 3rem; padding-top: 2rem; }
+  .hero-copy { position: relative; z-index: 2; }
+  .hero-label { margin: 0 0 1.2rem; color: #2997ff; font-size: .7rem; font-weight: 650; letter-spacing: .12em; }
+  h1 { margin: 0; font-size: clamp(3.5rem, 6.5vw, 5rem); font-weight: 650; letter-spacing: -.067em; line-height: .95; }
+  .hero-copy h2 { max-width: 40rem; margin: 1.65rem 0 0; color: #a1a1a6; font-size: clamp(1.25rem, 2.2vw, 1.75rem); font-weight: 520; line-height: 1.38; letter-spacing: -.025em; }
+  .oa .hero-copy h2 { color: #515154; }
+  .project-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.45rem; margin-top: 2rem; }
+  .project-actions a, .private-action { font-size: .88rem; text-decoration: none; }
+  .primary-action { border-radius: 999px; color: #fff; background: #0071e3; padding: .76rem 1.2rem; transition: background .25s ease, transform .25s var(--ease-premium); }
+  .primary-action:hover { background: #0077ed; transform: scale(1.03); }
+  .text-action { color: #2997ff; }
+  .text-action span { display: inline-block; margin-left: .18rem; font-size: 1.2rem; transition: transform .3s var(--ease-premium); }
+  .text-action:hover span { transform: translateX(4px); }
+  .private-action { border: 1px solid rgb(255 255 255 / .14); border-radius: 999px; color: #a1a1a6; padding: .72rem 1rem; }
+  .oa .private-action { border-color: rgb(0 0 0 / .1); color: #6e6e73; background: rgb(255 255 255 / .45); }
+  .hero-object { position: relative; width: min(100%, 29rem); aspect-ratio: 1; justify-self: end; perspective: 900px; }
+  .object-ring { position: absolute; top: 50%; left: 50%; border: 1px solid rgb(99 176 255 / .26); border-radius: 50%; }
+  .ring-one { width: 90%; aspect-ratio: 1; transform: translate(-50%, -50%) rotateX(68deg); animation: spin 15s linear infinite; }
+  .ring-two { width: 64%; aspect-ratio: 1; transform: translate(-50%, -50%) rotateY(70deg) rotateZ(25deg); animation: spin-alt 11s linear infinite; }
+  .object-core { position: absolute; top: 50%; left: 50%; display: grid; width: 10rem; aspect-ratio: 1; place-items: center; border: 1px solid rgb(255 255 255 / .3); border-radius: 50%; background: radial-gradient(circle at 35% 26%, #e6f6ff, #4f9df7 17%, #16244c 52%, #050608 78%); box-shadow: 0 0 70px rgb(42 129 255 / .38), inset -15px -15px 30px rgb(0 0 0 / .38); transform: translate(-50%, -50%); animation: float 5s ease-in-out infinite; }
+  .oa .object-core { border-color: #fff; background: radial-gradient(circle at 35% 26%, #fff, #b9dcff 22%, #8aaeff 50%, #765fca 79%); box-shadow: 0 28px 70px rgb(56 101 173 / .25), inset -15px -15px 30px rgb(56 58 129 / .2); }
+  .object-core strong { font-size: 1.15rem; letter-spacing: .06em; }
+  .object-core span { position: absolute; bottom: 2.3rem; color: #8fc5ff; font: .45rem/1 var(--font-mono); letter-spacing: .14em; }
+  .oa .object-core span { color: #fff; }
+  .object-node { position: absolute; width: .65rem; height: .65rem; border: 2px solid #fff; border-radius: 50%; background: #0071e3; box-shadow: 0 0 18px #0071e3; animation: node-pulse 3s ease-in-out infinite; }
+  .node-one { top: 15%; left: 18%; }
+  .node-two { top: 21%; right: 11%; animation-delay: -1s; }
+  .node-three { right: 18%; bottom: 12%; animation-delay: -2s; }
+  .hero-metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; border-top: 1px solid rgb(255 255 255 / .14); padding-top: 1.6rem; }
+  .oa .hero-metrics { border-color: rgb(0 0 0 / .1); }
+  .hero-metrics div + div { border-left: 1px solid rgb(255 255 255 / .14); padding-left: 2rem; }
+  .oa .hero-metrics div + div { border-color: rgb(0 0 0 / .1); }
+  .hero-metrics dd { margin: 0; font-size: clamp(1.7rem, 3vw, 2.5rem); font-weight: 600; letter-spacing: -.045em; }
+  .hero-metrics dt { margin-top: .35rem; color: #86868b; font-size: .7rem; }
+  .section-label { display: flex; align-items: center; gap: .7rem; padding-top: .4rem; }
+  .section-label span { color: #86868b; font: .62rem/1 var(--font-mono); }
+  .section-label p { margin: 0; color: #0066cc; font-size: .67rem; font-weight: 650; letter-spacing: .12em; }
+  .overview-section, .build-section { display: grid; grid-template-columns: 12rem 1fr; gap: 3rem; padding-block: clamp(7rem, 12vw, 11rem); }
+  .overview-copy > h2, .challenge-section h2, .build-content > h2, .flow-section h2, .proof-card h2, .boundary-card h2, .next-section h2 { margin: 0; font-size: clamp(2.25rem, 4vw, 3.35rem); font-weight: 640; letter-spacing: -.052em; line-height: 1.05; }
+  .overview-copy .lead { max-width: 49rem; margin: 2.2rem 0 0; color: #515154; font-size: clamp(1.18rem, 2vw, 1.55rem); line-height: 1.6; letter-spacing: -.025em; }
+  .tags { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 2.4rem; }
+  .tags span { border: 1px solid rgb(0 0 0 / .09); border-radius: 999px; color: #515154; background: #f5f5f7; padding: .52rem .78rem; font-size: .7rem; }
+  .challenge-section { background: #f5f5f7; padding: clamp(7rem, 12vw, 11rem) 0; }
+  .split-section { display: grid; grid-template-columns: 12rem 1fr; gap: 3rem; }
+  .challenge-copy { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; border-top: 1px solid #d2d2d7; margin-top: 3rem; padding-top: 1.8rem; }
+  .challenge-copy p { margin: 0; color: #515154; font-size: 1.04rem; line-height: 1.72; }
+  .build-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.3rem; margin-top: 3.5rem; }
+  .build-grid section { min-height: 20rem; border-radius: 2rem; background: #f5f5f7; padding: 2rem; transition: transform .5s var(--ease-premium), box-shadow .5s ease; }
+  .build-grid section:hover { box-shadow: 0 24px 60px rgb(0 0 0 / .1); transform: translateY(-6px); }
+  .build-grid span { color: #0066cc; font: 600 .7rem/1 var(--font-mono); }
+  .build-grid h3 { margin: 4rem 0 .8rem; font-size: 1.55rem; font-weight: 630; letter-spacing: -.035em; }
+  .build-grid p { margin: 0; color: #6e6e73; font-size: .91rem; line-height: 1.72; }
+  .flow-section { color: #f5f5f7; background: #000; padding: clamp(7rem, 12vw, 11rem) 0; }
+  .flow-section .section-label p { color: #2997ff; }
+  .flow-section h2 { margin-top: 2rem; }
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); margin: 4rem 0 0; padding: 0; list-style: none; }
+  .flow li { position: relative; border-top: 1px solid rgb(255 255 255 / .2); padding: 1.4rem 1rem 0 0; }
+  .flow li::before { position: absolute; top: -.3rem; left: 0; width: .55rem; height: .55rem; border-radius: 50%; background: #2997ff; box-shadow: 0 0 16px rgb(41 151 255 / .6); content: ''; }
+  .flow span { display: block; color: #6e6e73; font: .62rem/1 var(--font-mono); }
+  .flow strong { display: block; margin-top: .55rem; font-size: .83rem; font-weight: 550; }
+  .proof-section { display: grid; grid-template-columns: 12rem 1fr; gap: 3rem; padding-block: clamp(7rem, 12vw, 11rem); }
+  .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+  .proof-card, .boundary-card { border-radius: 2.2rem; padding: clamp(2rem, 4vw, 3.2rem); }
+  .proof-card { color: #f5f5f7; background: linear-gradient(145deg, #17171a, #070708); }
+  .boundary-card { background: #f5f5f7; }
+  .card-label { margin: 0 0 2.5rem; color: #2997ff; font-size: .68rem; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
+  .boundary-card .card-label { color: #bf5b00; }
+  .proof-card h2, .boundary-card h2 { font-size: clamp(2rem, 3vw, 2.65rem); }
+  .proof-card ul, .boundary-card ul { display: grid; gap: 1.15rem; margin: 2.5rem 0 0; padding: 0; list-style: none; }
+  .proof-card li, .boundary-card li { display: grid; grid-template-columns: 1.2rem 1fr; gap: .65rem; font-size: .86rem; line-height: 1.65; }
+  .proof-card li { color: #a1a1a6; }
+  .boundary-card li { color: #515154; }
+  .proof-card li span { color: #53d769; }
+  .boundary-card li span { color: #bf5b00; }
+  .next-section { color: #f5f5f7; background: #000; padding: clamp(7rem, 12vw, 10rem) 0; text-align: center; }
+  .next-section p { margin: 0 0 1.5rem; color: #2997ff; font-size: .7rem; font-weight: 650; letter-spacing: .12em; }
+  .next-section a { display: inline-block; margin-top: 2.4rem; color: #2997ff; font-size: 1rem; text-decoration: none; }
+  .next-section a span { margin-left: .2rem; font-size: 1.3rem; }
+  @keyframes spin { to { rotate: 360deg; } }
+  @keyframes spin-alt { to { rotate: -360deg; } }
+  @keyframes float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+  @keyframes node-pulse { 0%, 100% { opacity: .5; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.1); } }
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-object { display: none; }
+    .overview-section, .split-section, .build-section, .proof-section { grid-template-columns: 1fr; gap: 2rem; }
+    .section-label { padding-top: 0; }
+  }
+  @media (max-width: 650px) {
+    .detail-hero { padding-top: 1.5rem; }
+    .hero-grid { min-height: 31rem; }
+    h1 { font-size: clamp(3.2rem, 16vw, 4.6rem); }
+    .hero-metrics { grid-template-columns: 1fr; }
+    .hero-metrics div { padding: 1rem 0; }
+    .hero-metrics div + div { border-top: 1px solid rgb(255 255 255 / .14); border-left: 0; padding-left: 0; }
+    .oa .hero-metrics div + div { border-color: rgb(0 0 0 / .1); }
+    .challenge-copy, .build-grid, .proof-grid { grid-template-columns: 1fr; }
+    .build-grid section { min-height: auto; }
+    .build-grid h3 { margin-top: 2.7rem; }
+    .flow { grid-template-columns: 1fr; }
+    .flow li { border-top: 0; border-left: 1px solid rgb(255 255 255 / .2); padding: 0 0 1.5rem 1.2rem; }
+    .flow li::before { top: .1rem; left: -.3rem; }
+  }
 </style>

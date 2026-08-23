@@ -2,15 +2,11 @@
 import { navItems, profile } from '../data/profile';
 interface Props { active?: string; }
 const { active } = Astro.props;
-const avatarUrl = 'https://github.com/JimmyZhu1420.png?size=160';
 ---
 
-<header class="site-header">
+<header class="site-header" data-site-header>
   <nav class="nav-inner" aria-label="主导航">
-    <a class="brand" href="/" aria-label={`${profile.name}，返回首页`}>
-      <img src={avatarUrl} alt="" width="40" height="40" />
-      <span>{profile.name}</span>
-    </a>
+    <a class="brand" href="/" aria-label={`${profile.name}，返回首页`}>{profile.name}</a>
 
     <div id="nav-menu" class="nav-menu">
       <ul>
@@ -21,41 +17,25 @@ const avatarUrl = 'https://github.com/JimmyZhu1420.png?size=160';
     </div>
 
     <div class="nav-actions">
-      <a class="icon-link" href={profile.social.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">GH</a>
-      <button class="theme-button" type="button" data-theme-toggle aria-label="切换深浅色主题"><span aria-hidden="true">◐</span></button>
-      <button class="menu-button" type="button" data-menu-toggle aria-label="打开导航菜单" aria-expanded="false" aria-controls="nav-menu"><span aria-hidden="true">☰</span></button>
+      <a class="github-link" href={profile.social.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      <button class="menu-button" type="button" data-menu-toggle aria-label="打开导航菜单" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span></button>
     </div>
   </nav>
 </header>
 
 <script>
-  const root = document.documentElement;
-  const themeButton = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
-  const syncTheme = () => {
-    const dark = root.classList.contains('dark');
-    themeButton?.setAttribute('aria-label', dark ? '切换到浅色主题' : '切换到深色主题');
-    const icon = themeButton?.querySelector('span');
-    if (icon) icon.textContent = dark ? '☀' : '◐';
-  };
-  themeButton?.addEventListener('click', () => {
-    const dark = !root.classList.contains('dark');
-    root.classList.toggle('dark', dark);
-    root.dataset.theme = dark ? 'dark' : 'light';
-    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
-    syncTheme();
-  });
-  syncTheme();
-
   const menuButton = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.getElementById('nav-menu');
   const closeMenu = () => {
     menu?.classList.remove('open');
+    menuButton?.classList.remove('open');
     menuButton?.setAttribute('aria-expanded', 'false');
     menuButton?.setAttribute('aria-label', '打开导航菜单');
   };
   menuButton?.addEventListener('click', () => {
     const open = !menu?.classList.contains('open');
     menu?.classList.toggle('open', open);
+    menuButton.classList.toggle('open', open);
     menuButton.setAttribute('aria-expanded', String(open));
     menuButton.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单');
   });
@@ -64,29 +44,39 @@ const avatarUrl = 'https://github.com/JimmyZhu1420.png?size=160';
 </script>
 
 <style>
-  .site-header { position: fixed; z-index: 9999; inset: 0 0 auto; padding: 1rem 1.5rem; pointer-events: none; }
-  .nav-inner { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; width: 100%; max-width: 60rem; margin: 0 auto; border: 1px solid color-mix(in srgb, var(--hairline) 85%, transparent); border-radius: var(--radius-2xl); background: color-mix(in srgb, var(--page-bg) 82%, transparent); padding: .625rem 1rem .625rem 1.25rem; box-shadow: 0 4px 24px rgb(93 112 82 / .08); backdrop-filter: blur(12px); pointer-events: auto; }
-  .brand { display: inline-flex; min-width: 0; align-items: center; gap: .65rem; color: var(--page-text); text-decoration: none; }
-  .brand img { width: 2.5rem; height: 2.5rem; border: 2px solid var(--hairline); border-radius: 50%; object-fit: cover; background: var(--surface-soft); }
-  .brand span { overflow: hidden; font-size: .92rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-  .nav-menu ul { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
-  .nav-menu a { display: block; border-radius: var(--radius-lg); color: var(--muted-text); padding: .5rem .9rem; font-size: .82rem; font-weight: 520; text-decoration: none; transition: color .2s ease, background .2s ease; }
-  .nav-menu a:hover { color: var(--page-text); background: var(--surface-soft); }
-  .nav-menu a.active { color: var(--primary); font-weight: 650; }
-  .nav-actions { display: flex; align-items: center; justify-content: flex-end; gap: .25rem; }
-  .icon-link, .theme-button, .menu-button { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 0; border-radius: 50%; color: var(--muted-text); background: transparent; font: 650 .66rem/1 var(--font-mono); text-decoration: none; cursor: pointer; }
-  .icon-link:hover, .theme-button:hover, .menu-button:hover { color: var(--page-text); background: var(--surface-soft); }
-  .theme-button span { font: 500 1.05rem/1 var(--font-sans); }
-  .menu-button { display: none; font-size: 1rem; }
-  @media (max-width: 799px) {
-    .site-header { padding: .75rem; }
-    .nav-inner { display: flex; justify-content: space-between; padding: .5rem .55rem .5rem .75rem; }
-    .brand span { display: none; }
-    .menu-button { display: grid; }
-    .nav-menu { position: absolute; top: calc(100% + .6rem); right: 0; left: 0; display: none; border: 1px solid var(--hairline); border-radius: var(--radius-xl); background: var(--page-bg); padding: .5rem; box-shadow: var(--shadow-md); }
-    .nav-menu.open { display: block; }
-    .nav-menu ul { align-items: stretch; flex-direction: column; }
-    .nav-menu li { width: 100%; }
-    .nav-menu a { padding: .8rem 1rem; font-size: .9rem; }
+  .site-header {
+    position: fixed;
+    z-index: 9999;
+    inset: 0 0 auto;
+    height: 44px;
+    border-bottom: 1px solid transparent;
+    color: rgb(255 255 255 / .86);
+    background: rgb(22 22 23 / .72);
+    backdrop-filter: saturate(180%) blur(20px);
+    transition: background .35s ease, border-color .35s ease;
+  }
+  .site-header.is-scrolled { border-color: rgb(255 255 255 / .08); background: rgb(22 22 23 / .86); }
+  .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: min(100% - 2rem, 64rem); height: 100%; margin: 0 auto; }
+  .brand { color: #f5f5f7; font-size: .82rem; font-weight: 600; letter-spacing: -.01em; text-decoration: none; }
+  .nav-menu ul { display: flex; align-items: center; gap: 2.25rem; margin: 0; padding: 0; list-style: none; }
+  .nav-menu a { color: rgb(255 255 255 / .64); font-size: .73rem; font-weight: 400; letter-spacing: .01em; text-decoration: none; transition: color .25s ease; }
+  .nav-menu a:hover, .nav-menu a.active { color: #fff; }
+  .nav-actions { display: flex; align-items: center; justify-content: flex-end; }
+  .github-link { color: rgb(255 255 255 / .72); font-size: .72rem; text-decoration: none; transition: color .25s ease; }
+  .github-link:hover { color: #fff; }
+  .github-link span { display: inline-block; margin-left: .15rem; transition: transform .25s ease; }
+  .github-link:hover span { transform: translate3d(2px, -2px, 0); }
+  .menu-button { display: none; width: 2rem; height: 2rem; border: 0; color: inherit; background: transparent; padding: 0; cursor: pointer; }
+  .menu-button span { display: block; width: .9rem; height: 1px; margin: 4px auto; background: currentColor; transition: transform .3s ease; }
+  .menu-button.open span:first-child { transform: translateY(2.5px) rotate(45deg); }
+  .menu-button.open span:last-child { transform: translateY(-2.5px) rotate(-45deg); }
+  @media (max-width: 700px) {
+    .nav-inner { display: flex; justify-content: space-between; }
+    .github-link { display: none; }
+    .menu-button { display: block; }
+    .nav-menu { position: fixed; z-index: -1; inset: 44px 0 auto; visibility: hidden; border-top: 1px solid rgb(255 255 255 / .06); background: rgb(22 22 23 / .96); opacity: 0; transform: translateY(-12px); transition: opacity .3s ease, transform .3s ease, visibility .3s; backdrop-filter: blur(24px); }
+    .nav-menu.open { visibility: visible; opacity: 1; transform: translateY(0); }
+    .nav-menu ul { align-items: stretch; flex-direction: column; gap: 0; width: min(100% - 3rem, 32rem); margin: 0 auto; padding: 1rem 0 1.4rem; }
+    .nav-menu a { display: block; border-bottom: 1px solid rgb(255 255 255 / .08); padding: .9rem 0; color: rgb(255 255 255 / .84); font-size: 1rem; }
   }
 </style>

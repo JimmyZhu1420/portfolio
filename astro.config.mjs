@@ -5,7 +5,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://example.com', // TODO 占位域名，部署时替换
+  site: 'https://portfolio-jim-40ea.vercel.app',
   vite: { plugins: [tailwind()] },
   integrations: [mdx(), sitemap()],
   markdown: {

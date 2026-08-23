@@ -19,53 +19,104 @@ const readingMinutes = Math.max(1, Math.ceil(charCount / 400));
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} active="/blog" article socialImage={null}>
-  <div class="site-wrapper article-shell">
-    <article>
-      <a class="back-link" href="/blog">← 返回文章列表</a>
-      <header>
-        <h1>{post.data.title}</h1>
-        <div class="meta">
-          <time datetime={post.data.pubDate.toISOString()}>发布于：{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
-          <span>·</span><span>{charCount} 字</span><span>·</span><span>{readingMinutes} 分钟</span>
+  <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+  <article class="article-page" data-article>
+    <header class="article-hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="article-width">
+        <a class="back-link" href="/blog" data-reveal><span aria-hidden="true">‹</span> 全部文章</a>
+        <p class="article-kicker" data-reveal>AI AGENT ENGINEERING · FIELD NOTES</p>
+        <h1 data-reveal>{post.data.title}</h1>
+        <p class="article-description" data-reveal>{post.data.description}</p>
+        <div class="meta" data-reveal>
+          <time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
+          <span>{charCount} 字</span>
+          <span>约 {readingMinutes} 分钟</span>
         </div>
-        <div class="tags">{post.data.tags.map((tag) => <span>{tag}</span>)}</div>
-      </header>
+        <div class="tags" data-stagger>{post.data.tags.map((tag) => <span data-reveal>{tag}</span>)}</div>
+      </div>
+    </header>
+
+    <div class="article-body article-width">
       <div class="article-prose"><Content /></div>
-      <nav class="post-nav" aria-label="相邻文章">
-        {older ? <a href={`/blog/${older.id}`}><span>较早一篇</span><strong>← {older.data.title}</strong></a> : <span />}
-        {newer ? <a class="newer" href={`/blog/${newer.id}`}><span>较新一篇</span><strong>{newer.data.title} →</strong></a> : <span />}
+
+      <nav class="post-nav" aria-label="相邻文章" data-reveal>
+        {older ? <a href={`/blog/${older.id}`}><span>较早一篇</span><strong><i aria-hidden="true">‹</i>{older.data.title}</strong></a> : <span />}
+        {newer ? <a class="newer" href={`/blog/${newer.id}`}><span>较新一篇</span><strong>{newer.data.title}<i aria-hidden="true">›</i></strong></a> : <span />}
       </nav>
-    </article>
-  </div>
+    </div>
+  </article>
 </BaseLayout>
 
+<script>
+  const article = document.querySelector<HTMLElement>('[data-article]');
+  const progress = document.querySelector<HTMLElement>('[data-reading-progress]');
+  if (article && progress) {
+    let queued = false;
+    const update = () => {
+      const start = article.offsetTop;
+      const length = Math.max(article.scrollHeight - window.innerHeight, 1);
+      const value = Math.min(Math.max((window.scrollY - start) / length, 0), 1);
+      progress.style.transform = `scaleX(${value})`;
+      queued = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    update();
+  }
+</script>
+
 <style>
-  .article-shell { padding-block: 2.5rem 7rem; }
-  article { max-width: 52rem; margin: 0 auto; }
-  .back-link { color: var(--muted-text); font-size: .78rem; text-decoration: none; }
-  .back-link:hover { color: var(--primary); }
-  header { padding: 2.5rem 0 3rem; text-align: center; }
-  h1 { margin: 0 auto; font-family: var(--font-brand); font-size: clamp(2rem, 5vw, 3rem); font-weight: 680; letter-spacing: -.02em; line-height: 1.3; }
-  .meta { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; margin-top: 1.1rem; color: var(--muted-text); font-size: .78rem; }
-  .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; margin-top: 1rem; }
-  .tags span { border-radius: 999px; color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); padding: .32rem .6rem; font-size: .7rem; }
-  .article-prose { color: var(--page-text); font-size: 1rem; line-height: 1.9; }
-  .article-prose :global(h2) { margin: 2.7rem 0 1rem; font-family: var(--font-brand); font-size: 1.8rem; font-weight: 650; line-height: 1.35; }
-  .article-prose :global(h3) { margin: 2.2rem 0 .8rem; font-family: var(--font-brand); font-size: 1.35rem; font-weight: 650; }
-  .article-prose :global(p) { margin: 1rem 0; }
-  .article-prose :global(ul), .article-prose :global(ol) { display: grid; gap: .4rem; margin: 1rem 0; padding-left: 1.5rem; }
-  .article-prose :global(li::marker) { color: var(--primary); }
-  .article-prose :global(a) { color: var(--primary); text-underline-offset: .18rem; }
-  .article-prose :global(blockquote) { border-left: 4px solid var(--primary); margin: 1.5rem 0; border-radius: 0 var(--radius-md) var(--radius-md) 0; color: var(--muted-text); background: var(--surface-soft); padding: .9rem 1.2rem; }
-  .article-prose :global(pre) { overflow-x: auto; border: 1px solid var(--hairline); border-radius: var(--radius-md); background: var(--surface-soft) !important; padding: 1rem; }
-  .article-prose :global(code) { font-family: var(--font-mono); font-size: .88em; }
-  .article-prose :global(:not(pre) > code) { border-radius: .35rem; background: var(--surface-soft); padding: .15rem .32rem; }
-  .article-prose :global(img) { border-radius: var(--radius-lg); }
-  .post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--hairline); margin-top: 4rem; padding-top: 1.5rem; }
-  .post-nav a { display: flex; min-width: 0; flex-direction: column; gap: .35rem; color: inherit; text-decoration: none; }
+  .reading-progress { position: fixed; z-index: 10000; top: 44px; right: 0; left: 0; height: 2px; background: rgb(255 255 255 / .06); pointer-events: none; }
+  .reading-progress span { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #0071e3, #9a6aff); transform: scaleX(0); transform-origin: left center; will-change: transform; }
+  .article-page { background: #fff; }
+  .article-width { width: min(100% - 3rem, 49rem); margin-inline: auto; }
+  .article-hero { position: relative; overflow: hidden; color: #f5f5f7; background: #000; padding: 2.2rem 0 clamp(5rem, 10vw, 8rem); isolation: isolate; }
+  .hero-glow { position: absolute; z-index: -1; top: -35%; left: 50%; width: 56rem; height: 34rem; border-radius: 50%; background: radial-gradient(circle, rgb(35 123 255 / .22), rgb(141 74 255 / .08) 45%, transparent 72%); filter: blur(36px); transform: translateX(-50%); }
+  .back-link { display: inline-flex; align-items: center; gap: .32rem; color: #86868b; font-size: .75rem; text-decoration: none; }
+  .back-link span { font-size: 1.2rem; transition: transform .3s var(--ease-premium); }
+  .back-link:hover span { transform: translateX(-4px); }
+  .article-kicker { margin: clamp(5rem, 9vw, 7rem) 0 1.5rem; color: #2997ff; font-size: .7rem; font-weight: 650; letter-spacing: .12em; }
+  h1 { margin: 0; font-size: clamp(2.7rem, 5vw, 4rem); font-weight: 650; letter-spacing: -.055em; line-height: 1.06; text-wrap: balance; }
+  .article-description { max-width: 42rem; margin: 1.8rem 0 0; color: #a1a1a6; font-size: clamp(1.08rem, 1.7vw, 1.3rem); line-height: 1.6; }
+  .meta { display: flex; flex-wrap: wrap; gap: 1.2rem; border-top: 1px solid rgb(255 255 255 / .13); margin-top: 3rem; padding-top: 1.3rem; color: #86868b; font-size: .7rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.3rem; }
+  .tags span { border: 1px solid rgb(255 255 255 / .14); border-radius: 999px; color: #a1a1a6; background: rgb(255 255 255 / .04); padding: .42rem .68rem; font-size: .66rem; }
+  .article-body { padding-block: clamp(4rem, 8vw, 7rem); }
+  .article-prose { color: #1d1d1f; font-size: 1.08rem; line-height: 1.85; letter-spacing: -.008em; }
+  .article-prose :global(h2) { margin: 4rem 0 1.25rem; font-size: clamp(1.8rem, 3vw, 2.45rem); font-weight: 640; letter-spacing: -.04em; line-height: 1.15; }
+  .article-prose :global(h3) { margin: 3rem 0 1rem; font-size: 1.55rem; font-weight: 630; letter-spacing: -.025em; line-height: 1.25; }
+  .article-prose :global(p) { margin: 1.2rem 0; }
+  .article-prose :global(ul), .article-prose :global(ol) { display: grid; gap: .65rem; margin: 1.3rem 0; padding-left: 1.5rem; }
+  .article-prose :global(li::marker) { color: #0071e3; }
+  .article-prose :global(a) { color: #0066cc; font-weight: 500; text-decoration-thickness: 1px; text-underline-offset: .2rem; }
+  .article-prose :global(strong) { font-weight: 650; }
+  .article-prose :global(blockquote) { border-left: 3px solid #0071e3; margin: 2rem 0; border-radius: 0 1.2rem 1.2rem 0; color: #515154; background: #f5f5f7; padding: 1.1rem 1.4rem; }
+  .article-prose :global(blockquote p) { margin: 0; }
+  .article-prose :global(pre) { overflow-x: auto; border: 1px solid rgb(255 255 255 / .08); border-radius: 1.25rem; color: #f5f5f7; background: #121214 !important; padding: 1.3rem; box-shadow: 0 16px 40px rgb(0 0 0 / .12); }
+  .article-prose :global(code) { font-family: var(--font-mono); font-size: .84em; }
+  .article-prose :global(:not(pre) > code) { border-radius: .4rem; color: #7c3fc8; background: #f4edff; padding: .18rem .36rem; }
+  .article-prose :global(img) { max-width: 100%; border-radius: 1.5rem; box-shadow: 0 24px 60px rgb(0 0 0 / .12); }
+  .article-prose :global(hr) { border: 0; border-top: 1px solid #d2d2d7; margin: 3.5rem 0; }
+  .post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid #d2d2d7; margin-top: 5rem; padding-top: 1.8rem; }
+  .post-nav a { display: flex; min-width: 0; flex-direction: column; gap: .6rem; color: #1d1d1f; text-decoration: none; }
   .post-nav a.newer { text-align: right; }
-  .post-nav span { color: var(--muted-text); font-size: .7rem; }
-  .post-nav strong { overflow: hidden; font-size: .82rem; text-overflow: ellipsis; white-space: nowrap; }
-  .post-nav a:hover strong { color: var(--primary); }
-  @media (max-width: 600px) { .article-shell { padding-top: 1.5rem; } header { padding-top: 2rem; } .article-prose { font-size: .95rem; } }
+  .post-nav > a > span { color: #86868b; font-size: .7rem; }
+  .post-nav strong { display: flex; align-items: center; gap: .4rem; font-size: .85rem; font-weight: 570; line-height: 1.4; }
+  .post-nav .newer strong { justify-content: flex-end; }
+  .post-nav i { color: #0066cc; font-size: 1.25rem; font-style: normal; font-weight: 400; transition: transform .3s var(--ease-premium); }
+  .post-nav a:first-child:hover i { transform: translateX(-4px); }
+  .post-nav a.newer:hover i { transform: translateX(4px); }
+  @media (max-width: 620px) {
+    .article-width { width: min(100% - 2rem, 49rem); }
+    .article-kicker { margin-top: 4rem; }
+    h1 { font-size: clamp(2.4rem, 11vw, 3.3rem); }
+    .article-prose { font-size: 1rem; }
+    .post-nav { grid-template-columns: 1fr; }
+    .post-nav a.newer { text-align: left; }
+    .post-nav .newer strong { justify-content: flex-start; }
+  }
 </style>

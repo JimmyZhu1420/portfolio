@@ -55,7 +55,6 @@ export interface Profile {
   location: string;
   education: string[];
   researchInterests: string[];
-  jobIntention: string;
   about: string[];
   social: { github: string; linkedin: string; wechat: string };
   capabilities: Capability[];
@@ -65,16 +64,14 @@ export interface Profile {
 
 export const profile: Profile = {
   name: '朱佳明',
-  role: '东华大学计算机硕士 · AI Agent 开发实习方向',
+  role: '东华大学计算机硕士在读',
   tagline: '关注智能体编排、可信检索与可审计执行，把大模型能力做成可以验证、复现和交付的系统。',
   email: 'z1030835347@gmail.com',
   location: '上海',
   education: [
     '东华大学（211 双一流）· 计算机科学与技术 · 硕士 · 2025–2028',
-    '安徽理工大学 · 软件工程 · 本科 · 2020–2024',
   ],
   researchInterests: ['Agent Runtime', '多智能体协作', '可信 RAG', '评测与可观测性'],
-  jobIntention: 'AI Agent 开发实习生',
   about: [
     '我是东华大学计算机科学与技术专业硕士研究生，研究和实践聚焦 AI Agent 与大模型应用。我更关心模型如何在真实系统中稳定完成任务，而不只是生成一次看起来正确的回答。',
     '围绕这个目标，我构建了两个完整项目：EvoAgent 探索可恢复、可评测的代码审查 Agent Runtime；OA Evidence Agent 探索带证据链、Claim 校验与安全边界的医疗研究场景智能体。',

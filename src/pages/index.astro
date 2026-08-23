@@ -22,18 +22,21 @@ const educationNames = profile.education.map((item) => item.split('·')[0].trim(
         <div class="hero-content">
           <p class="hero-eyebrow">AI AGENT ENGINEERING · SHANGHAI</p>
           <h1>{profile.name}</h1>
-          <p class="hero-role">计算机硕士在读 · AI Agent 工程方向</p>
+          <p class="hero-role">东华大学 · 计算机硕士在读</p>
           <p class="hero-intro">关注智能体编排、可信检索与系统评测，希望把大模型能力做成可验证、可复现的工程系统。</p>
 
           <dl class="profile-facts">
             <div><dt>教育经历</dt><dd>{educationNames.join(' · ')}</dd></div>
-            <div><dt>求职方向</dt><dd>{profile.jobIntention}</dd></div>
+            <div><dt>研究方向</dt><dd>Agent Runtime · 可信 RAG</dd></div>
             <div><dt>目前地点</dt><dd>{profile.location}</dd></div>
           </dl>
 
-          <div class="hero-actions">
-            <a href={profile.social.github} target="_blank" rel="noopener noreferrer">github.com/JimmyZhu1420 <span aria-hidden="true">↗</span></a>
-            <a href={`mailto:${profile.email}`}>{profile.email} <span aria-hidden="true">↗</span></a>
+          <div class="hero-contact">
+            <p>联系方式</p>
+            <div class="hero-actions">
+              <a href={profile.social.github} target="_blank" rel="noopener noreferrer"><span>GitHub</span><strong>JimmyZhu1420</strong><i aria-hidden="true">↗</i></a>
+              <a href={`mailto:${profile.email}`}><span>邮箱</span><strong>{profile.email}</strong><i aria-hidden="true">↗</i></a>
+            </div>
           </div>
         </div>
 
@@ -296,10 +299,15 @@ const educationNames = profile.education.map((item) => item.split('·')[0].trim(
   .profile-facts div { display: grid; grid-template-columns: 5rem 1fr; gap: 1rem; align-items: baseline; }
   .profile-facts dt { color: #6e6e73; font-size: .7rem; }
   .profile-facts dd { margin: 0; color: #c7c7cc; font-size: .82rem; line-height: 1.45; }
-  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; margin-top: 1.6rem; }
-  .hero-actions a { color: #2997ff; font-size: .86rem; text-decoration: none; }
-  .hero-actions span { display: inline-block; margin-left: .18rem; transition: transform .3s var(--ease-premium); }
-  .hero-actions a:hover span { transform: translate3d(3px, -3px, 0); }
+  .hero-contact { margin-top: 1.5rem; }
+  .hero-contact > p { margin: 0 0 .65rem; color: #6e6e73; font-size: .7rem; }
+  .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+  .hero-actions a { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .65rem; border: 1px solid rgb(255 255 255 / .12); border-radius: .8rem; color: #f5f5f7; background: rgb(255 255 255 / .04); padding: .72rem .8rem; text-decoration: none; transition: border-color .3s ease, background .3s ease, transform .3s var(--ease-premium); }
+  .hero-actions a:hover { border-color: rgb(41 151 255 / .42); background: rgb(41 151 255 / .08); transform: translateY(-2px); }
+  .hero-actions span { color: #7eb8ff; font-size: .66rem; font-weight: 600; }
+  .hero-actions strong { overflow: hidden; color: #c7c7cc; font-size: .69rem; font-weight: 480; text-overflow: ellipsis; white-space: nowrap; }
+  .hero-actions i { color: #2997ff; font-size: .72rem; font-style: normal; transition: transform .3s var(--ease-premium); }
+  .hero-actions a:hover i { transform: translate3d(2px, -2px, 0); }
   .button { display: inline-flex; min-height: 2.9rem; align-items: center; justify-content: center; border-radius: 999px; padding: .7rem 1.35rem; font-size: .93rem; font-weight: 500; text-decoration: none; transition: background .3s ease, color .3s ease, transform .3s var(--ease-premium), box-shadow .3s ease; }
   .button:hover { transform: scale(1.035); }
   .button-primary { color: #fff; background: #0071e3; box-shadow: 0 0 0 0 rgb(0 113 227 / 0); }
@@ -495,7 +503,7 @@ const educationNames = profile.education.map((item) => item.split('·')[0].trim(
     .hero-layout { grid-template-columns: 1fr; }
     .hero h1 { font-size: clamp(2.8rem, 13vw, 3.6rem); }
     .hero-intro { max-width: 29rem; font-size: .98rem; }
-    .hero-actions { gap: 1.25rem; }
+    .hero-actions { grid-template-columns: 1fr; gap: .55rem; }
     .core-scene { width: min(74vw, 22rem); justify-self: center; margin-top: 1rem; }
     .scroll-cue { display: none; }
     .manifesto h2, .story-heading h2, .showcase-heading h2, .writing-heading h2 { font-size: clamp(2.1rem, 9vw, 2.7rem); }

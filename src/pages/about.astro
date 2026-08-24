@@ -122,17 +122,27 @@ const stackGroups = [
   .about-hero .shell > p { margin: 0 0 1.5rem; color: #2997ff; font-size: .75rem; font-weight: 650; letter-spacing: .13em; }
   h1 { margin: 0; font-size: clamp(3rem, 5vw, 4rem); font-weight: 650; letter-spacing: -.06em; line-height: 1; }
   .theme-transition {
-    height: clamp(7rem, 12vw, 10rem);
-    background:
-      radial-gradient(75% 140% at 50% 0%, rgb(41 151 255 / .08), transparent 62%),
-      linear-gradient(180deg, #000 0%, #0b0b0d 22%, #2b2b2f 48%, #7f7f84 72%, #d7d7dc 91%, #fff 100%);
+    position: relative;
+    height: clamp(3.5rem, 5vw, 4.75rem);
+    overflow: hidden;
+    background: #000;
+    pointer-events: none;
   }
-  :global(html[data-theme='dark']) .theme-transition {
-    background:
-      radial-gradient(75% 140% at 50% 0%, rgb(41 151 255 / .08), transparent 62%),
-      linear-gradient(180deg, #000 0%, #050506 38%, #0b0b0d 100%);
+  .theme-transition::before {
+    position: absolute;
+    top: .75rem;
+    right: 50%;
+    bottom: -1px;
+    width: 140%;
+    border-radius: 50% 50% 0 0 / 3.2rem 3.2rem 0 0;
+    background: var(--surface);
+    box-shadow: 0 -18px 60px rgb(41 151 255 / .09);
+    content: '';
+    transform: translateX(50%);
   }
-  .intro-section, .education-section, .site-section { display: grid; grid-template-columns: 12rem 1fr; gap: 3rem; padding-block: clamp(7rem, 12vw, 11rem); }
+  .intro-section, .education-section, .site-section { display: grid; grid-template-columns: 12rem 1fr; gap: 3rem; }
+  .intro-section { padding-block: clamp(4.75rem, 8vw, 7rem) clamp(7rem, 12vw, 11rem); }
+  .education-section, .site-section { padding-block: clamp(7rem, 12vw, 11rem); }
   .intro-label { display: flex; align-items: flex-start; gap: .65rem; padding-top: .35rem; }
   .intro-label span { color: #86868b; font: .62rem/1 var(--font-mono); }
   .intro-label p { margin: 0; color: var(--primary); font-size: .67rem; font-weight: 650; letter-spacing: .11em; }

@@ -59,6 +59,8 @@ const educationNames = profile.education.map((item) => item.split('·')[0].trim(
       <a class="scroll-cue" href="#profile" aria-label="向下了解更多"><span></span></a>
     </section>
 
+    <div class="theme-transition" aria-hidden="true"></div>
+
     <section id="profile" class="manifesto">
       <div class="shell">
         <p class="section-kicker" data-reveal>ABOUT</p>
@@ -357,6 +359,12 @@ const educationNames = profile.education.map((item) => item.split('·')[0].trim(
   .scroll-cue span { position: relative; width: 1px; height: 1.4rem; overflow: hidden; background: rgb(255 255 255 / .22); }
   .scroll-cue span::after { position: absolute; inset: -100% 0 auto; height: 60%; background: #fff; content: ''; animation: scroll-drop 2s ease-in-out infinite; }
 
+  .theme-transition {
+    height: clamp(7rem, 12vw, 10rem);
+    background:
+      radial-gradient(75% 140% at 50% 0%, rgb(41 151 255 / .08), transparent 62%),
+      linear-gradient(180deg, #000 0%, #0b0b0d 22%, #2b2b2f 48%, #7f7f84 72%, #d7d7dc 91%, #fff 100%);
+  }
   .manifesto { color: #1d1d1f; background: #fff; padding: clamp(6rem, 10vw, 9rem) 0; }
   .section-kicker { margin: 0 0 1.4rem; color: #0066cc; font-size: .77rem; font-weight: 650; letter-spacing: .13em; }
   .section-kicker.light { color: #2997ff; }

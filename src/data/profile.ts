@@ -49,10 +49,8 @@ export interface Publication {
 
 export interface Profile {
   name: string;
-  role: string;
   tagline: string;
   email: string;
-  location: string;
   education: string[];
   researchInterests: string[];
   about: string[];
@@ -64,10 +62,8 @@ export interface Profile {
 
 export const profile: Profile = {
   name: '朱佳明',
-  role: '东华大学计算机硕士在读',
   tagline: '关注智能体编排、可信检索与可审计执行，把大模型能力做成可以验证、复现和交付的系统。',
   email: 'z1030835347@gmail.com',
-  location: '上海',
   education: [
     '东华大学（211 双一流）· 计算机科学与技术 · 硕士 · 2025–2028',
   ],

@@ -36,12 +36,12 @@ const personJsonLd = {
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f5f5f7" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={profile.name} />
@@ -65,7 +65,20 @@ const personJsonLd = {
     {socialImage && <meta name="twitter:image" content={new URL(socialImage, Astro.site)} />}
     {socialImage && <meta name="twitter:image:alt" content={socialImageAlt} />}
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)}></script>
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        let theme = 'light';
+        try {
+          const savedTheme = localStorage.getItem('site-theme');
+          if (savedTheme === 'light' || savedTheme === 'dark') theme = savedTheme;
+        } catch {}
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0b0b0d' : '#f5f5f7');
+        root.classList.add('js');
+      })();
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳到主要内容</a>

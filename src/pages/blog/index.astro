@@ -44,7 +44,7 @@ const posts = (await getCollection('blog'))
 </BaseLayout>
 
 <style>
-  .blog-page { background: #fff; }
+  .blog-page { color: var(--page-text); background: var(--surface); }
   .blog-hero { position: relative; overflow: hidden; color: #f5f5f7; background: #000; padding: clamp(6rem, 10vw, 8rem) 0 4rem; isolation: isolate; }
   .blog-hero::before { position: absolute; z-index: -1; top: 15%; right: -15%; width: 38rem; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgb(72 135 255 / .2), rgb(140 65 255 / .09) 45%, transparent 70%); content: ''; filter: blur(32px); }
   .hero-orbit { position: absolute; top: 14%; right: max(-3rem, calc((100vw - 72rem) / 2)); width: min(38vw, 30rem); aspect-ratio: 1; border: 1px solid rgb(255 255 255 / .08); border-radius: 50%; opacity: .7; animation: orbit 24s linear infinite; }
@@ -61,18 +61,18 @@ const posts = (await getCollection('blog'))
   .hero-meta p { max-width: 39rem; margin: 0; color: #a1a1a6; font-size: clamp(1.05rem, 1.7vw, 1.3rem); line-height: 1.6; }
   .hero-meta span { flex: none; color: #6e6e73; font: .67rem/1 var(--font-mono); letter-spacing: .08em; }
   .posts-section { padding-block: clamp(5rem, 9vw, 8rem); }
-  .list-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d2d2d7; padding-bottom: 1rem; color: #86868b; font: .62rem/1 var(--font-mono); letter-spacing: .1em; }
+  .list-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--hairline); padding-bottom: 1rem; color: var(--subtle-text); font: .62rem/1 var(--font-mono); letter-spacing: .1em; }
   .posts-list { margin: 0; padding: 0; list-style: none; }
-  .posts-list li { border-bottom: 1px solid #d2d2d7; }
-  .posts-list a { display: grid; grid-template-columns: 4rem 1fr auto; gap: 2rem; color: #1d1d1f; padding: 3rem 0; text-decoration: none; transition: padding .45s var(--ease-premium); }
+  .posts-list li { border-bottom: 1px solid var(--hairline); }
+  .posts-list a { display: grid; grid-template-columns: 4rem 1fr auto; gap: 2rem; color: var(--page-text); padding: 3rem 0; text-decoration: none; transition: padding .45s var(--ease-premium); }
   .posts-list a:hover { padding-inline: 1rem; }
   .post-index { color: #86868b; font: .65rem/1.3 var(--font-mono); }
   .post-meta { display: flex; align-items: center; gap: 1rem; color: #86868b; font-size: .68rem; }
-  .post-meta span { color: #0066cc; font-weight: 650; letter-spacing: .08em; }
+  .post-meta span { color: var(--primary); font-weight: 650; letter-spacing: .08em; }
   .post-copy h2 { max-width: 50rem; margin: .9rem 0 .75rem; font-size: clamp(1.8rem, 3.2vw, 2.8rem); font-weight: 640; letter-spacing: -.048em; line-height: 1.08; transition: color .25s ease; }
-  .posts-list a:hover h2 { color: #0066cc; }
-  .post-copy > p { max-width: 42rem; margin: 0; color: #6e6e73; font-size: .96rem; line-height: 1.65; }
-  .post-arrow { align-self: center; color: #0066cc; font-size: 1.3rem; transition: transform .35s var(--ease-premium); }
+  .posts-list a:hover h2 { color: var(--primary); }
+  .post-copy > p { max-width: 42rem; margin: 0; color: var(--muted-text); font-size: .96rem; line-height: 1.65; }
+  .post-arrow { align-self: center; color: var(--primary); font-size: 1.3rem; transition: transform .35s var(--ease-premium); }
   .posts-list a:hover .post-arrow { transform: translate3d(4px, -4px, 0); }
   .blog-note { color: #f5f5f7; background: #000; padding: clamp(7rem, 12vw, 11rem) 0; text-align: center; }
   .blog-note h2 { margin: 0; font-size: clamp(3rem, 6.7vw, 6rem); font-weight: 650; letter-spacing: -.064em; line-height: .98; }

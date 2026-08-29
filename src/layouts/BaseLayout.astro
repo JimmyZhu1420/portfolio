@@ -21,7 +21,14 @@ const {
   socialImage = '/og.png',
   socialImageAlt = '朱佳明，AI Agent 工程：EvoAgent 与 OA Evidence Agent',
 } = Astro.props;
-const fullTitle = title === '首页' ? `${profile.name} · AI Agent 工程` : `${title} · ${profile.name}`;
+const siteName = 'JimZhu';
+const sectionTitles: Record<string, string> = {
+  首页: siteName,
+  项目: `Projects · ${siteName}`,
+  文章: `Writing · ${siteName}`,
+  关于: `About · ${siteName}`,
+};
+const fullTitle = sectionTitles[title] ?? `${title} · ${siteName}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const personJsonLd = {
   '@context': 'https://schema.org',

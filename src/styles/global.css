@@ -90,6 +90,7 @@ body {
 
 ::selection { color: #fff; background: #0071e3; }
 a, button { -webkit-tap-highlight-color: transparent; }
+a, button { transition-timing-function: var(--ease-premium); }
 :focus-visible { outline: 3px solid rgb(0 113 227 / .42); outline-offset: 4px; }
 
 .site-wrapper,
@@ -127,7 +128,7 @@ a, button { -webkit-tap-highlight-color: transparent; }
 .js [data-reveal] {
   opacity: 0;
   filter: blur(10px);
-  transform: translate3d(0, 36px, 0);
+  transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 36px), 0) scale(.985);
   transition:
     opacity .9s var(--ease-premium),
     filter .9s var(--ease-premium),
@@ -141,6 +142,20 @@ a, button { -webkit-tap-highlight-color: transparent; }
   filter: blur(0);
   transform: translate3d(0, 0, 0);
 }
+
+.motion-surface { --spotlight-x: 50%; --spotlight-y: 50%; position: relative; isolation: isolate; }
+.motion-surface::after {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(24rem circle at var(--spotlight-x) var(--spotlight-y), rgb(41 151 255 / .13), transparent 68%);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .5s var(--ease-premium);
+}
+.motion-surface:hover::after { opacity: 1; }
 
 @media (max-width: 700px) {
   .site-wrapper,

@@ -65,7 +65,7 @@ export const profile: Profile = {
   tagline: '关注智能体编排、可信检索与可审计执行，把大模型能力做成可以验证、复现和交付的系统。',
   email: 'z1030835347@gmail.com',
   education: [
-    '东华大学（211 双一流）· 计算机科学与技术 · 硕士 · 2025–2028',
+    '东华大学 · 计算机科学与技术 · 硕士 · 2025–2028',
   ],
   researchInterests: ['Agent Runtime', '多智能体协作', '可信 RAG', '评测与可观测性'],
   about: [

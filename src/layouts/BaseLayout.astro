@@ -115,6 +115,20 @@ const personJsonLd = {
       const syncNav = () => nav?.classList.toggle('is-scrolled', window.scrollY > 16);
       syncNav();
       window.addEventListener('scroll', syncNav, { passive: true });
+
+      if (!reduceMotion && window.matchMedia('(pointer: fine)').matches) {
+        const motionSurfaces = document.querySelectorAll<HTMLElement>(
+          '.project-feature, .project-main, .post-list > a, .focus-grid > a, .build-grid section'
+        );
+        motionSurfaces.forEach((surface) => {
+          surface.classList.add('motion-surface');
+          surface.addEventListener('pointermove', (event) => {
+            const rect = surface.getBoundingClientRect();
+            surface.style.setProperty('--spotlight-x', `${event.clientX - rect.left}px`);
+            surface.style.setProperty('--spotlight-y', `${event.clientY - rect.top}px`);
+          });
+        });
+      }
     </script>
   </body>
 </html>

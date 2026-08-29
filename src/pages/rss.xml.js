@@ -7,7 +7,7 @@ export async function GET(context) {
     .filter((post) => !post.data.draft)
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
   return rss({
-    title: `${profile.name}的项目笔记`,
+    title: `${profile.brandName}的项目笔记`,
     description: '记录 AI Agent 工程中的架构选择、验证证据与失败边界',
     site: context.site,
     items: posts.map((post) => ({

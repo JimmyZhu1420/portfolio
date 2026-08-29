@@ -49,6 +49,7 @@ export interface Publication {
 
 export interface Profile {
   name: string;
+  brandName: string;
   tagline: string;
   email: string;
   education: string[];
@@ -62,6 +63,7 @@ export interface Profile {
 
 export const profile: Profile = {
   name: '朱佳明',
+  brandName: 'JimZhu',
   tagline: '关注智能体编排、可信检索与可审计执行，把大模型能力做成可以验证、复现和交付的系统。',
   email: 'z1030835347@gmail.com',
   education: [

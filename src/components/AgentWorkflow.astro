@@ -1,0 +1,150 @@
+---
+const nodes = [
+  { id: 'planning', label: 'Planning', path: 'M 70 94 H 124 Q 140 94 148 110 L 170 150', delay: '0s' },
+  { id: 'tools', label: 'Tools', path: 'M 350 190 H 274', delay: '3s' },
+  { id: 'verification', label: 'Verification', path: 'M 90 308 H 131 Q 146 308 154 291 L 174 253', delay: '6s' },
+];
+---
+
+<div class="workflow-overlay" data-agent-workflow aria-hidden="true">
+  <svg class="workflow-links" viewBox="0 0 400 400" fill="none" focusable="false">
+    {nodes.map((node) => (
+      <g style={`--node-delay: ${node.delay}`}>
+        <path class="workflow-link" d={node.path} />
+        <path class="workflow-signal" d={node.path} pathLength="100" />
+      </g>
+    ))}
+  </svg>
+
+  <div class="workflow-nodes">
+    {nodes.map((node) => (
+      <span class={`workflow-node node-${node.id}`} style={`--node-delay: ${node.delay}`} data-workflow-node={node.id}>{node.label}</span>
+    ))}
+  </div>
+
+  <p class="workflow-caption">Agent workflow</p>
+</div>
+
+<style>
+  /* Keep this layer outside the sphere's 3D transform so labels stay readable. */
+  .workflow-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .workflow-links {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .workflow-link {
+    stroke: rgb(144 195 245 / .24);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .workflow-signal {
+    stroke: #a9d9ff;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 1 100;
+    stroke-dashoffset: 2;
+    vector-effect: non-scaling-stroke;
+    opacity: 0;
+    animation: workflow-signal 9s linear var(--node-delay) infinite;
+  }
+
+  .workflow-node {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    border: 1px solid rgb(155 199 245 / .22);
+    border-radius: .65rem;
+    padding: .5rem .7rem;
+    color: #cbd8e8;
+    background: #080f1c;
+    font: 450 .875rem/1.35 var(--font-sans);
+    letter-spacing: .015em;
+    white-space: nowrap;
+  }
+
+  .workflow-node::before {
+    width: .2rem;
+    height: .2rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #84b9ec;
+    content: '';
+  }
+
+  .workflow-node::after {
+    position: absolute;
+    inset: -1px;
+    border: 1px solid rgb(130 192 255 / .7);
+    border-radius: inherit;
+    box-shadow: 0 0 15px rgb(66 146 235 / .16);
+    opacity: 0;
+    content: '';
+    animation: workflow-highlight 9s ease-in-out var(--node-delay) infinite;
+  }
+
+  .node-planning { top: 18%; left: 0; }
+  .node-tools { top: 43%; right: 0; }
+  .node-verification { top: 72%; left: 2%; }
+
+  .workflow-caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+    color: #94a5bb;
+    font: 450 .75rem/1.5 var(--font-mono);
+    letter-spacing: .04em;
+  }
+
+  .workflow-caption::before {
+    width: .25rem;
+    height: .25rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #8bb9e7;
+    content: '';
+  }
+
+  @keyframes workflow-signal {
+    0% { opacity: 0; stroke-dashoffset: 2; }
+    3% { opacity: .85; }
+    24% { opacity: .85; }
+    28%, 100% { opacity: 0; stroke-dashoffset: -100; }
+  }
+
+  @keyframes workflow-highlight {
+    0%, 30%, 100% { opacity: 0; }
+    7%, 20% { opacity: .8; }
+  }
+
+  @media (max-width: 700px) {
+    .workflow-overlay { position: relative; padding-top: .5rem; }
+    .workflow-links { display: none; }
+    .workflow-nodes { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
+    .workflow-node { position: relative; inset: auto; }
+    .workflow-node::after { animation: none; opacity: 0; }
+    .workflow-caption { position: static; margin: 1rem 0 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .workflow-signal { display: none; animation: none; }
+    .workflow-node::after { animation: none; opacity: 0; }
+  }
+</style>

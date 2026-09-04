@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AgentWorkflow from '../components/AgentWorkflow.astro';
 import { profile } from '../data/profile';
 
 const posts = (await getCollection('blog'))
@@ -34,19 +35,21 @@ const [evoAgent, oaAgent] = profile.projects;
           </div>
         </div>
 
-        <div class="core-scene" data-core aria-hidden="true">
-          <div class="core-shadow"></div>
-          <div class="core-system">
-            <div class="orbit orbit-outer"><i></i><i></i></div>
-            <div class="orbit orbit-middle"><i></i></div>
-            <div class="orbit orbit-inner"><i></i><i></i><i></i></div>
-            <div class="core-glow"></div>
-            <div class="core-sphere">
-              <div class="sphere-sheen"></div>
-              <span>AGENT</span>
+        <div class="core-scene" data-core role="img" aria-label="Agent 工作流示意：任务规划、工具调用和结果验证。">
+          <div class="core-visual" aria-hidden="true">
+            <div class="core-shadow"></div>
+            <div class="core-system">
+              <div class="orbit orbit-outer"><i></i><i></i></div>
+              <div class="orbit orbit-middle"><i></i></div>
+              <div class="orbit orbit-inner"><i></i><i></i><i></i></div>
+              <div class="core-glow"></div>
+              <div class="core-sphere">
+                <div class="sphere-sheen"></div>
+                <span>AGENT</span>
+              </div>
             </div>
-            <div class="core-status"><b></b> runtime verified</div>
           </div>
+          <AgentWorkflow />
         </div>
       </div>
 
@@ -263,13 +266,12 @@ const [evoAgent, oaAgent] = profile.projects;
     position: relative;
     z-index: 1;
     width: min(34vw, 28rem);
-    aspect-ratio: 1;
     justify-self: end;
-    perspective: 1000px;
     opacity: calc(1 - var(--hero-progress) * .65);
     transform: translate3d(0, calc(var(--hero-progress) * 76px), 0) scale(calc(1 - var(--hero-progress) * .08));
     will-change: opacity, transform;
   }
+  .core-visual { position: relative; width: 100%; aspect-ratio: 1; perspective: 1000px; }
   .core-shadow { position: absolute; right: 16%; bottom: 3%; left: 16%; height: 13%; border-radius: 50%; background: rgb(36 127 255 / .24); filter: blur(30px); transform: rotateX(70deg); }
   .core-system {
     position: absolute;
@@ -295,8 +297,6 @@ const [evoAgent, oaAgent] = profile.projects;
   .core-glow { position: absolute; inset: 29%; border-radius: 50%; background: radial-gradient(circle at 38% 34%, #fff 0, #a4d7ff 8%, #1979ed 35%, #42198c 72%, transparent 73%); filter: blur(12px); opacity: .68; animation: core-pulse 4s ease-in-out infinite; }
   .core-sphere { position: absolute; display: grid; inset: 34%; place-items: center; overflow: hidden; border: 1px solid rgb(255 255 255 / .34); border-radius: 50%; color: rgb(255 255 255 / .9); background: radial-gradient(circle at 34% 24%, #d9f3ff 0, #4e9af7 18%, #18244b 48%, #080b16 76%); box-shadow: inset -16px -18px 38px rgb(0 0 0 / .48), inset 10px 12px 28px rgb(255 255 255 / .14), 0 0 56px rgb(52 132 255 / .38); font: 650 .62rem/1 var(--font-mono); letter-spacing: .19em; }
   .sphere-sheen { position: absolute; top: 8%; left: 18%; width: 46%; height: 25%; border-radius: 50%; background: linear-gradient(180deg, rgb(255 255 255 / .6), transparent); filter: blur(9px); transform: rotate(-23deg); }
-  .core-status { position: absolute; right: 50%; bottom: 4%; display: flex; align-items: center; gap: .45rem; transform: translateX(50%); color: rgb(255 255 255 / .52); font: 500 .62rem/1 var(--font-mono); letter-spacing: .08em; white-space: nowrap; }
-  .core-status b { width: .38rem; height: .38rem; border-radius: 50%; background: #53d769; box-shadow: 0 0 12px #53d769; animation: status-pulse 2s ease-in-out infinite; }
   .scroll-cue { position: absolute; z-index: 3; bottom: 1.2rem; left: 50%; display: grid; width: 2rem; height: 2.8rem; place-items: center; transform: translateX(-50%); }
   .scroll-cue span { position: relative; width: 1px; height: 1.4rem; overflow: hidden; background: rgb(255 255 255 / .22); }
   .scroll-cue span::after { position: absolute; inset: -100% 0 auto; height: 60%; background: #fff; content: ''; animation: scroll-drop 2s ease-in-out infinite; }
@@ -413,7 +413,6 @@ const [evoAgent, oaAgent] = profile.projects;
   @keyframes orbit-one { to { rotate: 360deg; } }
   @keyframes orbit-two { to { rotate: -360deg; } }
   @keyframes core-pulse { 0%, 100% { opacity: .56; transform: scale(.94); } 50% { opacity: .82; transform: scale(1.08); } }
-  @keyframes status-pulse { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
   @keyframes scroll-drop { 0% { transform: translateY(0); } 65%, 100% { transform: translateY(330%); } }
   @keyframes evidence-ring { 0%, 100% { opacity: .35; transform: scale(.96); } 50% { opacity: 1; transform: scale(1.04); } }
   @keyframes hero-line-in { from { opacity: 0; filter: blur(8px); transform: translate3d(0, 20px, 0); } to { opacity: 1; filter: blur(0); transform: translate3d(0, 0, 0); } }
